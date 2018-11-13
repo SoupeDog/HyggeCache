@@ -1,0 +1,40 @@
+package org.xavier.hyggecache.serializer;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import org.xavier.hyggecache.enums.HyggeCacheExceptionEnum;
+import org.xavier.hyggecache.enums.SerializerPolicyEnum;
+import org.xavier.hyggecache.exception.HyggeCacheRuntimeException;
+
+/**
+ * 描述信息：<br/>
+ *
+ * @author Xavier
+ * @version 1.0
+ * @date 2018.11.13
+ * @since Jdk 1.8
+ */
+public class FastJsonSerializer extends BaseSerializer<TypeReference> {
+    public FastJsonSerializer() {
+        type = SerializerPolicyEnum.FASTJSON;
+    }
+
+    @Override
+    public byte[] serialize(Object obj) {
+        return JSON.toJSONBytes(obj);
+    }
+
+    @Override
+    public Object deserialize(byte[] bytes, String typeInfoKey) {
+        TypeReference typeReference = typeInfoKeeper.queryTypeReferenceByName(typeInfoKey);
+        if (typeReference == null) {
+            throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.SERIALIZE, "TypeInfo that key=" + typeInfoKey + " was not found.");
+        }
+        return JSON.parseObject(new String(bytes), typeReference);
+    }
+
+    @Override
+    public Object deserialize(byte[] bytes, Class<?> methodReturnClass) {
+        return JSON.parseObject(bytes, methodReturnClass);
+    }
+}

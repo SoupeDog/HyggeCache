@@ -13,8 +13,8 @@ public enum SerializerPolicyEnum {
     JACKSON(0, "Jacson_SerializerPolicy"),
     FASTJSON(1, "Fastjson_SerializerPolicy"),
     CUSTOM(2, "Custom");
-    private Integer index;
-    private String description;
+    private final Integer index;
+    private final String description;
 
     SerializerPolicyEnum(Integer index, String description) {
         this.index = index;

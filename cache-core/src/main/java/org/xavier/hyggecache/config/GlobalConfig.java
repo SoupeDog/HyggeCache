@@ -25,6 +25,11 @@ public class GlobalConfig {
      */
     private Long nullValueExpireInMillis;
 
+    /**
+     * 是否自动创建默认的 Jackson 序列化工具 <br/> true 创建
+     */
+    private Boolean createDefaultSerializer;
+
     public GlobalConfig() {
     }
 
@@ -50,5 +55,13 @@ public class GlobalConfig {
 
     public void setNullValueExpireInMillis(Long nullValueExpireInMillis) {
         this.nullValueExpireInMillis = nullValueExpireInMillis;
+    }
+
+    public Boolean getCreateDefaultSerializer() {
+        return createDefaultSerializer;
+    }
+
+    public void setCreateDefaultSerializer(Boolean createDefaultSerializer) {
+        this.createDefaultSerializer = createDefaultSerializer;
     }
 }

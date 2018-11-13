@@ -22,7 +22,7 @@ public abstract class BaseSerializer<T> {
      */
     protected TypeInfoKeeper<T> typeInfoKeeper;
 
-    public abstract byte[] serialize(Object t);
+    public abstract byte[] serialize(Object obj);
 
     /**
      * 复杂类型反序列化
