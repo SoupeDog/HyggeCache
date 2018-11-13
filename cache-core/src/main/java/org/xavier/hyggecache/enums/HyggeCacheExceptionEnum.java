@@ -9,7 +9,9 @@ package org.xavier.hyggecache.enums;
  * @since Jdk 1.8
  */
 public enum HyggeCacheExceptionEnum {
-    SERIALIZE(0, "Serialize Exception");
+    SERIALIZE(0, "Serialize Exception"),
+    CACHE_KEY(1, "CacheKey Exception"),
+    CACHE_OPERATOR(2, "Cache_Operator Exception");
     private final Integer index;
     private final String description;
 

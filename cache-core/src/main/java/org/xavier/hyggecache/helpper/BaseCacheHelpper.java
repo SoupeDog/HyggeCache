@@ -3,7 +3,7 @@ package org.xavier.hyggecache.helpper;
 import org.xavier.hyggecache.config.CoreConfig;
 import org.xavier.hyggecache.enums.CacheHelperType;
 import org.xavier.hyggecache.enums.ImplementsType;
-import org.xavier.hyggecache.operator.CacheOperator;
+import org.xavier.hyggecache.operator.BaseCacheOperator;
 import org.xavier.hyggecache.serializer.BaseSerializer;
 
 /**
@@ -38,7 +38,7 @@ public abstract class BaseCacheHelpper {
     /**
      * 缓存落地操作对象
      */
-    protected CacheOperator cacheOperator;
+    protected BaseCacheOperator cacheOperator;
 
     public CacheHelperType getCacheHelperType() {
         return cacheHelperType;
@@ -72,11 +72,11 @@ public abstract class BaseCacheHelpper {
         this.serializer = serializer;
     }
 
-    public CacheOperator getCacheOperator() {
+    public BaseCacheOperator getCacheOperator() {
         return cacheOperator;
     }
 
-    public void setCacheOperator(CacheOperator cacheOperator) {
+    public void setCacheOperator(BaseCacheOperator cacheOperator) {
         this.cacheOperator = cacheOperator;
     }
 }
