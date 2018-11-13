@@ -2,18 +2,21 @@ package org.xavier.hyggecache.enums;
 
 /**
  * 描述信息：<br/>
+ * 缓存操作类类型
  *
  * @author Xavier
  * @version 1.0
- * @date 2018.11.12
+ * @date 2018.11.13
  * @since Jdk 1.8
  */
-public enum HyggeCacheExceptionEnum {
-    SERIALIZE(0, "Serialize Exception");
+public enum CacheHelperType {
+    GET(0, "Get"),
+    PUT(1, "Put"),
+    INVALIDATE(2, "Invalidate");
     private final Integer index;
     private final String description;
 
-    HyggeCacheExceptionEnum(Integer index, String description) {
+    CacheHelperType(Integer index, String description) {
         this.index = index;
         this.description = description;
     }

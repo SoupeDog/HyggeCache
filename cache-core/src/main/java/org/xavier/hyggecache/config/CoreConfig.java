@@ -2,14 +2,14 @@ package org.xavier.hyggecache.config;
 
 /**
  * 描述信息：<br/>
- * 全局配置对象
+ * 核心配置对象
  *
  * @author Xavier
  * @version 1.0
  * @date 2018.11.12
  * @since Jdk 1.8
  */
-public class GlobalConfig {
+public class CoreConfig {
     /**
      * 缓存结果过期时间(毫秒)
      */
@@ -30,7 +30,7 @@ public class GlobalConfig {
      */
     private Boolean createDefaultSerializer;
 
-    public GlobalConfig() {
+    public CoreConfig() {
     }
 
     public Long getExpireInMillis() {
