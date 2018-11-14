@@ -2,7 +2,7 @@ package org.xavier.hyggecache.aop;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.xavier.hyggecache.helpper.BaseCacheHelpper;
+import org.xavier.hyggecache.helper.BaseCacheHelper;
 import org.xavier.hyggecache.keeper.PointcutKeeper;
 
 import java.lang.reflect.Method;
@@ -26,8 +26,8 @@ public class CacheInterceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation methodInvocation) {
         Method method = methodInvocation.getMethod();
-        BaseCacheHelpper helpper = pointcutKeeper.queryHandler(method, methodInvocation.getThis().getClass());
-        switch (helpper.getCacheHelperType()) {
+        BaseCacheHelper helper = pointcutKeeper.queryHandler(method, methodInvocation.getThis().getClass());
+        switch (helper.getCacheHelperType()) {
             case GET:
                 break;
             case PUT:

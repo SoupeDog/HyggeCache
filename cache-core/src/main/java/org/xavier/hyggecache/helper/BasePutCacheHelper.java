@@ -1,4 +1,4 @@
-package org.xavier.hyggecache.helpper;
+package org.xavier.hyggecache.helper;
 
 import org.xavier.hyggecache.enums.CacheHelperType;
 import org.xavier.hyggecache.enums.ImplementsType;
@@ -12,8 +12,8 @@ import org.xavier.hyggecache.enums.ImplementsType;
  * @date 2018.11.13
  * @since Jdk 1.8
  */
-public abstract class BasePutCacheHelpper extends BaseCacheHelpper {
-    public BasePutCacheHelpper(ImplementsType implementsType) {
+public abstract class BasePutCacheHelper extends BaseCacheHelper {
+    public BasePutCacheHelper(ImplementsType implementsType) {
         this.implementsType = implementsType;
         cacheHelperType = CacheHelperType.PUT;
     }

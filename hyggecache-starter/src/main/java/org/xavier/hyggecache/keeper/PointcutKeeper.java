@@ -1,6 +1,6 @@
 package org.xavier.hyggecache.keeper;
 
-import org.xavier.hyggecache.helpper.BaseCacheHelpper;
+import org.xavier.hyggecache.helper.BaseCacheHelper;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,12 +17,12 @@ import java.util.concurrent.ConcurrentMap;
  * @since Jdk 1.8
  */
 public class PointcutKeeper {
-    private ConcurrentMap<PointcutMarker, BaseCacheHelpper> handlers = new ConcurrentHashMap(64);
+    private ConcurrentMap<PointcutMarker, BaseCacheHelper> handlers = new ConcurrentHashMap(64);
 
     /**
-     * 查询 BaseCacheHelpper 缓存
+     * 查询 BaseCacheHelper 缓存
      */
-    public BaseCacheHelpper queryHandler(Method invocationMethod, Class<?> targetClass) {
+    public BaseCacheHelper queryHandler(Method invocationMethod, Class<?> targetClass) {
         PointcutMarker currentPointcutMarker = new PointcutMarker(invocationMethod, targetClass);
         if (handlers.containsKey(currentPointcutMarker)) {
             return handlers.get(currentPointcutMarker);
@@ -32,23 +32,23 @@ public class PointcutKeeper {
     }
 
     /**
-     * 尝试缓存 BaseCacheHelpper
+     * 尝试缓存 BaseCacheHelper
      *
-     * @return 上一个 key 相同的 BaseCacheHelpper(如果为 null 说明之前不存在，未发生覆盖)
+     * @return 上一个 key 相同的 BaseCacheHelper(如果为 null 说明之前不存在，未发生覆盖)
      */
-    public BaseCacheHelpper putHandlerIfAbsent(Method invocationMethod, Class<?> targetClass, BaseCacheHelpper BaseCacheHelpper) {
+    public BaseCacheHelper putHandlerIfAbsent(Method invocationMethod, Class<?> targetClass, BaseCacheHelper BaseCacheHelper) {
         PointcutMarker currentPointcutMarker = new PointcutMarker(invocationMethod, targetClass);
-        BaseCacheHelpper preBaseCacheHandler = handlers.putIfAbsent(currentPointcutMarker, BaseCacheHelpper);
+        BaseCacheHelper preBaseCacheHandler = handlers.putIfAbsent(currentPointcutMarker, BaseCacheHelper);
         return preBaseCacheHandler;
     }
 
     /**
-     * 尝试缓存 BaseCacheHelpper
+     * 尝试缓存 BaseCacheHelper
      *
-     * @return 上一个 key 相同的 BaseCacheHelpper(如果为 null 说明之前不存在，未发生覆盖)
+     * @return 上一个 key 相同的 BaseCacheHelper(如果为 null 说明之前不存在，未发生覆盖)
      */
-    public BaseCacheHelpper putHandlerIfAbsent(PointcutMarker currentPointcutMarker, BaseCacheHelpper BaseCacheHelpper) {
-        BaseCacheHelpper preBaseCacheHandler = handlers.putIfAbsent(currentPointcutMarker, BaseCacheHelpper);
+    public BaseCacheHelper putHandlerIfAbsent(PointcutMarker currentPointcutMarker, BaseCacheHelper BaseCacheHelper) {
+        BaseCacheHelper preBaseCacheHandler = handlers.putIfAbsent(currentPointcutMarker, BaseCacheHelper);
         return preBaseCacheHandler;
     }
 }

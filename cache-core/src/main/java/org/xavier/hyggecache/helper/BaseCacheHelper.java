@@ -1,4 +1,4 @@
-package org.xavier.hyggecache.helpper;
+package org.xavier.hyggecache.helper;
 
 import org.xavier.hyggecache.config.CoreConfig;
 import org.xavier.hyggecache.enums.CacheHelperType;
@@ -15,7 +15,7 @@ import org.xavier.hyggecache.serializer.BaseSerializer;
  * @date 2018.11.13
  * @since Jdk 1.8
  */
-public abstract class BaseCacheHelpper {
+public abstract class BaseCacheHelper {
     /**
      * 缓存逻辑类型
      */
