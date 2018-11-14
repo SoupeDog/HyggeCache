@@ -20,16 +20,14 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class TypeInfo<T> {
     private final Type type;
-    private final SerializerPolicyEnum serializerPolicyEnum;
 
-    public TypeInfo(SerializerPolicyEnum serializerPolicyEnum) {
+    public TypeInfo() {
         Type superClass = getClass().getGenericSuperclass();
         // sanity check, should never happen
         if (superClass instanceof Class<?>) {
             throw new IllegalArgumentException("Internal error: TypeReference constructed without actual type information");
         }
         type = ((ParameterizedType) superClass).getActualTypeArguments()[0];
-        this.serializerPolicyEnum = serializerPolicyEnum;
     }
 
     public <T> JacksonTypeReference<T> jackson() {

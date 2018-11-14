@@ -1,13 +1,12 @@
 package org.xavier.hyggecache.keeper;
 
 import org.xavier.hyggecache.serializer.BaseSerializer;
-import org.xavier.hyggecache.serializer.JacksonSerializer;
 
 import java.util.HashMap;
 
 /**
  * 描述信息：<br/>
- * 序列化工具保管对象
+ * 序列化工具存储对象
  *
  * @author Xavier
  * @version 1.0

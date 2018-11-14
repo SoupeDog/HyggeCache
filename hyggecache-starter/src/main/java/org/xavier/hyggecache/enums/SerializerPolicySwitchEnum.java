@@ -2,6 +2,7 @@ package org.xavier.hyggecache.enums;
 
 /**
  * 描述信息：<br/>
+ * 指定自动初始化的序列化工具
  *
  * @author Xavier
  * @version 1.0
