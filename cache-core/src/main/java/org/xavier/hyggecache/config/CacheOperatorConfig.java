@@ -23,11 +23,18 @@ public class CacheOperatorConfig {
     private Long expireInMillis;
 
     /**
+     * 查询结果为空标记过期时间(毫秒)
+     */
+    private Long nullValueExpireInMillis;
+
+    /**
      * key 重写函数
      */
     private Function keyConverter;
 
     public CacheOperatorConfig() {
+        // 有 key 脱敏需求可自行重置该函数，默认 key 不变
+        keyConverter = key -> key;
     }
 
     public String getPrefix() {
@@ -44,6 +51,14 @@ public class CacheOperatorConfig {
 
     public void setExpireInMillis(Long expireInMillis) {
         this.expireInMillis = expireInMillis;
+    }
+
+    public Long getNullValueExpireInMillis() {
+        return nullValueExpireInMillis;
+    }
+
+    public void setNullValueExpireInMillis(Long nullValueExpireInMillis) {
+        this.nullValueExpireInMillis = nullValueExpireInMillis;
     }
 
     public Function getKeyConverter() {

@@ -1,10 +1,11 @@
-package org.xavier.hyggecache.serializer;
+package org.xavier.hyggecache.keeper;
 
 import org.xavier.hyggecache.enums.HyggeCacheExceptionEnum;
 import org.xavier.hyggecache.enums.SerializerPolicyEnum;
 import org.xavier.hyggecache.exception.HyggeCacheRuntimeException;
+import org.xavier.hyggecache.serializer.TypeInfo;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 /**
  * 描述信息：<br/>
@@ -16,8 +17,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since Jdk 1.8
  */
 public class TypeInfoKeeper<T> {
+    /**
+     * Jacson 自动构造的默认 BeanName
+     */
+    public static final String JACSON_DEFAULT_NAME = "JacksonTypeInfo_Default";
+    /**
+     * Jacson 用户覆盖的默认 BeanName
+     */
+    public static final String JACSON_DEFAULT_NAME_CUSTOM = "JacksonTypeInfo_Default_Custom";
+    /**
+     * Fastjson 自动构造的默认 BeanName
+     */
+    public static final String FASTJSON_DEFAULT_NAME = "FastJsonTypeInfo_Default";
+    /**
+     * Fastjson 用户覆盖的默认 BeanName
+     */
+    public static final String FASTJSON_DEFAULT_NAME_CUSTOM = "FastJsonTypeInfo_Default_Custom";
+
     private final SerializerPolicyEnum type;
-    private final ConcurrentHashMap<String, T> typeInfoMap = new ConcurrentHashMap();
+    /**
+     * 只初始化一次应该不存在并发问题 Key: TypeInfo 的唯一标识
+     */
+    private final HashMap<String, T> typeInfoMap = new HashMap();
 
     public TypeInfoKeeper(SerializerPolicyEnum type) {
         this.type = type;

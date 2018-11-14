@@ -15,8 +15,19 @@ import org.xavier.hyggecache.exception.HyggeCacheRuntimeException;
  * @since Jdk 1.8
  */
 public class FastJsonSerializer extends BaseSerializer<TypeReference> {
+    /**
+     * 自动构造的默认 BeanName
+     */
+    public static final String DEFAULT_NAME = "FastJsonSerializer_Default";
+
     public FastJsonSerializer() {
+        super();
         type = SerializerPolicyEnum.FASTJSON;
+    }
+
+    @Override
+    public String getTypeInfoKey() {
+        return "TypeInfoKeeper_FastJson";
     }
 
     @Override

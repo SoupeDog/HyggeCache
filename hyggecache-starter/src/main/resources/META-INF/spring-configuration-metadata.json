@@ -1,0 +1,44 @@
+{
+  "hints": [
+    {
+      "name": "hyggecache.default.cacheNullValue",
+      "values": [
+        {
+          "value": true
+        },
+        {
+          "value": false
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "全局配置",
+      "type": "org.xavier.hyggecache.config.GlobalConfigProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.expireInMillis",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.cacheNullValue",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.nullValueExpireInMillis",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.prefix",
+      "type": "java.lang.String"
+    }
+  ]
+}

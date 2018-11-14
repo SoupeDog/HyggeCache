@@ -1,4 +1,4 @@
-package hyggecache.operator.redis;
+package org.xavier.hyggecache.operator.redis;
 
 import org.xavier.hyggecache.config.CacheOperatorConfig;
 import org.xavier.hyggecache.enums.HyggeCacheExceptionEnum;
@@ -28,27 +28,35 @@ public class RedisCacheOperator<K> extends BaseCacheOperator<K> {
 
     @Override
     public Optional<byte[]> get(CacheOperatorConfig config, K cacheKey) {
-        byte[] result = jedis.get(buildKey(config, cacheKey));
+        byte[] bytes_Key = buildKey(config, cacheKey);
+        byte[] result = jedis.get(bytes_Key);
         return result == null ? Optional.empty() : Optional.of(result);
     }
 
     @Override
     public void put(CacheOperatorConfig config, K cacheKey, byte[] value) {
+        byte[] bytes_Key = buildKey(config, cacheKey);
         if (config.getExpireInMillis() == null) {
-            jedis.set(buildKey(config, cacheKey), value);
+            jedis.set(bytes_Key, value);
         } else {
-            jedis.psetex(buildKey(config, cacheKey), config.getExpireInMillis(), value);
+            jedis.psetex(bytes_Key, config.getExpireInMillis(), value);
         }
     }
 
     @Override
-    public void remove(CacheOperatorConfig config, K cacheKey) {
-        //TODO 未完工
+    public Boolean remove(CacheOperatorConfig config, K cacheKey) {
+        byte[] bytes_Key = buildKey(config, cacheKey);
+        return jedis.del(bytes_Key) == 1;
     }
 
     @Override
-    public void putNullValueCache(CacheOperatorConfig config, K cacheKey) {
-
+    public void putNullValue(CacheOperatorConfig config, K cacheKey) {
+        byte[] bytes_Key = buildKey(config, cacheKey);
+        if (config.getNullValueExpireInMillis() != null) {
+            jedis.psetex(bytes_Key, config.getNullValueExpireInMillis(), NULL_VALUE);
+        } else {
+            throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.CACHE_OPERATOR, "[NullValueExpireInMillis] was null.");
+        }
     }
 
     protected byte[] buildKey(CacheOperatorConfig config, K key) {

@@ -46,7 +46,7 @@ public abstract class BaseCacheOperator<K> {
      * @param config   缓存配置
      * @param cacheKey 缓存唯一标识
      */
-    public abstract void remove(CacheOperatorConfig config, K cacheKey);
+    public abstract Boolean remove(CacheOperatorConfig config, K cacheKey);
 
     /**
      * 为对应的 Key 缓存 NULL_VALUE 标识
@@ -54,7 +54,7 @@ public abstract class BaseCacheOperator<K> {
      * @param config   缓存配置
      * @param cacheKey 缓存唯一标识
      */
-    public abstract void putNullValueCache(CacheOperatorConfig config, K cacheKey);
+    public abstract void putNullValue(CacheOperatorConfig config, K cacheKey);
 
 
     /**

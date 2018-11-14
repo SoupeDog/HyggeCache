@@ -13,22 +13,17 @@ public class CoreConfig {
     /**
      * 缓存结果过期时间(毫秒)
      */
-    private Long expireInMillis;
+    protected Long expireInMillis;
 
     /**
      * 实际返回结果为空的查询是否在缓存中标记无返回结果 <br/> true 开启
      */
-    private Boolean cacheNullValue;
+    protected Boolean cacheNullValue;
 
     /**
      * 查询结果为空标记过期时间(毫秒)
      */
-    private Long nullValueExpireInMillis;
-
-    /**
-     * 是否自动创建默认的 Jackson 序列化工具 <br/> true 创建
-     */
-    private Boolean createDefaultSerializer;
+    protected Long nullValueExpireInMillis;
 
     public CoreConfig() {
     }
@@ -55,13 +50,5 @@ public class CoreConfig {
 
     public void setNullValueExpireInMillis(Long nullValueExpireInMillis) {
         this.nullValueExpireInMillis = nullValueExpireInMillis;
-    }
-
-    public Boolean getCreateDefaultSerializer() {
-        return createDefaultSerializer;
-    }
-
-    public void setCreateDefaultSerializer(Boolean createDefaultSerializer) {
-        this.createDefaultSerializer = createDefaultSerializer;
     }
 }

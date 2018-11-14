@@ -1,6 +1,7 @@
 package org.xavier.hyggecache.serializer;
 
 import org.xavier.hyggecache.enums.SerializerPolicyEnum;
+import org.xavier.hyggecache.keeper.TypeInfoKeeper;
 
 /**
  * 描述信息：<br/>
@@ -12,6 +13,19 @@ import org.xavier.hyggecache.enums.SerializerPolicyEnum;
  * @since Jdk 1.8
  */
 public abstract class BaseSerializer<T> {
+    public static String typeInfoKey;
+
+    public BaseSerializer() {
+        typeInfoKey = getTypeInfoKey();
+    }
+
+    /**
+     * 用于初始化 typeInfoKey
+     *
+     * @return 该序列化对象对应的 TypeInfoKeeper name
+     */
+    public abstract String getTypeInfoKey();
+
     /**
      * 标识自身序列化类型
      */
@@ -45,4 +59,13 @@ public abstract class BaseSerializer<T> {
     public SerializerPolicyEnum getType() {
         return type;
     }
+
+    public TypeInfoKeeper<T> getTypeInfoKeeper() {
+        return typeInfoKeeper;
+    }
+
+    public void setTypeInfoKeeper(TypeInfoKeeper<T> typeInfoKeeper) {
+        this.typeInfoKeeper = typeInfoKeeper;
+    }
+
 }

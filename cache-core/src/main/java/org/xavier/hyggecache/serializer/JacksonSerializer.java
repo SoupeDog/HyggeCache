@@ -19,11 +19,21 @@ import java.io.IOException;
  * @since Jdk 1.8
  */
 public class JacksonSerializer extends BaseSerializer<TypeReference> {
-    private final ObjectMapper mapper;
+    /**
+     * 自动构造的默认 BeanName
+     */
+    public static final String DEFAULT_NAME = "JacksonSerializer_Default";
+    private ObjectMapper mapper;
 
     public JacksonSerializer(ObjectMapper mapper) {
+        super();
         type = SerializerPolicyEnum.JACKSON;
         this.mapper = mapper;
+    }
+
+    @Override
+    public String getTypeInfoKey() {
+        return "TypeInfoKeeper_Jackson";
     }
 
     @Override
@@ -61,5 +71,13 @@ public class JacksonSerializer extends BaseSerializer<TypeReference> {
             throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.SERIALIZE,
                     String.format("Fail to deserialize,target class : [%s] .", methodReturnClass.getName()), e);
         }
+    }
+
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+
+    public void setMapper(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 }
