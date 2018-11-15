@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 /**
  * 描述信息：<br/>
- * Aop 实现模式选择器
+ * AopGetCacheHelper 实现模式选择器
  *
  * @author Xavier
  * @version 1.0

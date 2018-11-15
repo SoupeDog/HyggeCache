@@ -1,6 +1,5 @@
 package org.xavier.hyggecache.helper;
 
-import org.xavier.hyggecache.config.CoreConfig;
 import org.xavier.hyggecache.enums.CacheHelperType;
 import org.xavier.hyggecache.enums.ImplementsType;
 import org.xavier.hyggecache.operator.BaseCacheOperator;
@@ -26,11 +25,6 @@ public abstract class BaseCacheHelper {
     protected ImplementsType implementsType;
 
     /**
-     * 核心配置项
-     */
-    protected CoreConfig coreConfig;
-
-    /**
      * 序列化工具
      */
     protected BaseSerializer serializer;
@@ -54,14 +48,6 @@ public abstract class BaseCacheHelper {
 
     public void setImplementsType(ImplementsType implementsType) {
         this.implementsType = implementsType;
-    }
-
-    public CoreConfig getCoreConfig() {
-        return coreConfig;
-    }
-
-    public void setCoreConfig(CoreConfig coreConfig) {
-        this.coreConfig = coreConfig;
     }
 
     public BaseSerializer getSerializer() {

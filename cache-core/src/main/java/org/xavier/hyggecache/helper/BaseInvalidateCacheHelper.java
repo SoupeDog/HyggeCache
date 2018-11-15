@@ -12,7 +12,7 @@ import org.xavier.hyggecache.enums.ImplementsType;
  * @date 2018.11.13
  * @since Jdk 1.8
  */
-public abstract class BaseInvalidateCacheHelper extends BaseCacheHelper {
+public abstract class BaseInvalidateCacheHelper<K> extends BaseCacheHelper {
     public BaseInvalidateCacheHelper(ImplementsType implementsType) {
         this.implementsType = implementsType;
         cacheHelperType = CacheHelperType.INVALIDATE;
@@ -21,5 +21,5 @@ public abstract class BaseInvalidateCacheHelper extends BaseCacheHelper {
     /**
      * 清除缓存
      */
-    public abstract void invalidate(String cacheKey);
+    public abstract void invalidate(K cacheKey);
 }

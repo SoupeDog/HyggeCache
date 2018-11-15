@@ -5,7 +5,7 @@ import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
 
 /**
  * 描述信息：<br/>
- * Aop 通知器
+ * AopGetCacheHelper 通知器
  *
  * @author Xavier
  * @version 1.0
