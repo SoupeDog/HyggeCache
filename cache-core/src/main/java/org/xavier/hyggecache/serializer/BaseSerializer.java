@@ -36,6 +36,12 @@ public abstract class BaseSerializer<T> {
      */
     protected TypeInfoKeeper<T> typeInfoKeeper;
 
+    /**
+     * 将目标对象序列化
+     *
+     * @param obj 目标对象
+     * @return 序列化结果的字节数组形式
+     */
     public abstract byte[] serialize(Object obj);
 
     /**
