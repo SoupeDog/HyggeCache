@@ -5,21 +5,27 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportAware;
+import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
 import org.xavier.hyggecache.annotation.EnableHyggeCache;
+import org.xavier.hyggecache.aop.CacheAdvisor;
+import org.xavier.hyggecache.aop.CacheInterceptor;
+import org.xavier.hyggecache.aop.CachePointCut;
+import org.xavier.hyggecache.builder.AopCacheHelperBuilder;
 import org.xavier.hyggecache.config.GlobalConfig;
 import org.xavier.hyggecache.config.GlobalConfigProperties;
+import org.xavier.hyggecache.enums.HyggeCacheExceptionEnum;
 import org.xavier.hyggecache.enums.SerializerPolicyEnum;
+import org.xavier.hyggecache.exception.HyggeCacheRuntimeException;
+import org.xavier.hyggecache.keeper.PointcutKeeper;
 import org.xavier.hyggecache.keeper.SerializerKeeper;
 import org.xavier.hyggecache.keeper.TypeInfoKeeper;
 import org.xavier.hyggecache.keeper.TypeInfoKeeperLv2;
+import org.xavier.hyggecache.operator.BaseCacheOperator;
 import org.xavier.hyggecache.serializer.BaseSerializer;
 import org.xavier.hyggecache.serializer.JacksonSerializer;
 
@@ -108,4 +114,48 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
         System.out.println("SerializerKeeper size: " + result.size());
         return result;
     }
+
+    @Bean
+    public BaseCacheOperator baseCacheOperator() {
+        BaseCacheOperator result = null;
+        Map<String, BaseCacheOperator> operatorMap = applicationContext.getBeansOfType(BaseCacheOperator.class);
+        if (operatorMap.size() != 1) {
+            StringBuilder baseCacheOperatorNames = new StringBuilder();
+            baseCacheOperatorNames.append("[");
+            for (String key : operatorMap.keySet()) {
+                baseCacheOperatorNames.append(key);
+                baseCacheOperatorNames.append(",");
+            }
+            baseCacheOperatorNames.deleteCharAt(baseCacheOperatorNames.length() - 1);
+            baseCacheOperatorNames.append("]");
+            throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.CACHE_OPERATOR, "Implement of BaseCacheOperator should be single but : " + baseCacheOperatorNames);
+        }
+        for (BaseCacheOperator operator : operatorMap.values()) {
+            result = operator;
+        }
+        return result;
+    }
+
+    @Bean
+    public PointcutKeeper pointcutKeeper() {
+        return new PointcutKeeper();
+    }
+
+    @Bean
+    public AopCacheHelperBuilder aopCacheHelperBuilder(PointcutKeeper pointcutKeeper, BaseCacheOperator baseCacheOperator, SerializerKeeper serializerKeeper, GlobalConfig globalConfig) {
+        return new AopCacheHelperBuilder(applicationContext, baseCacheOperator, serializerKeeper, pointcutKeeper, globalConfig);
+    }
+
+    @Bean(name = CacheAdvisor.CACHE_ADVISOR_BEAN_NAME)
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public CacheAdvisor cacheAdvisor(AopCacheHelperBuilder aopCacheHelperBuilder) {
+        CachePointCut cachePointCut = new CachePointCut(basePackages, aopCacheHelperBuilder, aopCacheHelperBuilder.getPointcutKeeper());
+        CacheAdvisor advisor = new CacheAdvisor(cachePointCut);
+        CacheInterceptor interceptor = new CacheInterceptor(aopCacheHelperBuilder.getPointcutKeeper());
+        advisor.setAdvice(interceptor);
+        advisor.setBeanFactory(applicationContext);
+        return advisor;
+    }
+
+
 }

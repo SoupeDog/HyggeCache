@@ -32,6 +32,16 @@ public class AopPutCacheHelper<K> extends BasePutCacheHelper<K> {
      */
     private CacheOperatorConfig cacheOperatorConfig;
 
+    /**
+     * 序列化操作类必须包含的配置项
+     */
+    private SerializerConfig serializerConfig;
+
+    /**
+     * 实际返回结果为空的查询是否在缓存中标记无返回结果 <br/> true 开启
+     */
+    private Boolean cacheNullValue;
+
     public AopPutCacheHelper(ImplementsType implementsType) {
         super(implementsType);
     }
@@ -63,5 +73,21 @@ public class AopPutCacheHelper<K> extends BasePutCacheHelper<K> {
 
     public void setCacheOperatorConfig(CacheOperatorConfig cacheOperatorConfig) {
         this.cacheOperatorConfig = cacheOperatorConfig;
+    }
+
+    public SerializerConfig getSerializerConfig() {
+        return serializerConfig;
+    }
+
+    public void setSerializerConfig(SerializerConfig serializerConfig) {
+        this.serializerConfig = serializerConfig;
+    }
+
+    public Boolean getCacheNullValue() {
+        return cacheNullValue;
+    }
+
+    public void setCacheNullValue(Boolean cacheNullValue) {
+        this.cacheNullValue = cacheNullValue;
     }
 }

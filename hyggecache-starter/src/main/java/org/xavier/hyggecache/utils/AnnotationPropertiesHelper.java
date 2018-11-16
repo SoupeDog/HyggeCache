@@ -22,25 +22,25 @@ public class AnnotationPropertiesHelper {
         return target;
     }
 
-    public static Long getAsLong(String target, Long defaultWhenException) {
+    public static Long getAsLong(String target, Long defaultWhenUnexpected) {
         Long result = null;
         if (!"".equals(target.trim())) {
             try {
                 result = Long.valueOf(target);
             } catch (NumberFormatException e) {
-                result = defaultWhenException;
+                result = defaultWhenUnexpected;
             }
         }
         return result;
     }
 
-    public static Integer getAsInteger(String target, Integer defaultWhenException) {
+    public static Integer getAsInteger(String target, Integer defaultWhenUnexpected) {
         Integer result = null;
         if (!"".equals(target.trim())) {
             try {
                 result = Integer.valueOf(target);
             } catch (NumberFormatException e) {
-                result = defaultWhenException;
+                result = defaultWhenUnexpected;
             }
         }
         return result;
@@ -64,14 +64,46 @@ public class AnnotationPropertiesHelper {
         Boolean result = null;
         switch (target.trim().toUpperCase()) {
             case "TRUE":
+            case "1":
                 result = true;
                 break;
             case "FALSE":
+            case "0":
                 result = false;
                 break;
             default:
                 result = defaultWhenUnexpected;
         }
         return result;
+    }
+
+    public static String mergeAsString(String highestPriority, String secondPriority, String thirdPriority) {
+        return (String) mergeObject(highestPriority, secondPriority, thirdPriority);
+    }
+
+    public static Long mergeAsLong(Long highestPriority, Long secondPriority, Long thirdPriority) {
+        return (Long) mergeObject(highestPriority, secondPriority, thirdPriority);
+    }
+
+    public static Integer mergeAsInteger(Integer highestPriority, Integer secondPriority, Integer thirdPriority) {
+        return (Integer) mergeObject(highestPriority, secondPriority, thirdPriority);
+    }
+
+    public static Boolean mergeAsBoolean(Boolean highestPriority, Boolean secondPriority, Boolean thirdPriority) {
+        return (Boolean) mergeObject(highestPriority, secondPriority, thirdPriority);
+    }
+
+    public static SerializerPolicyEnum mergeAsSerializerPolicyEnum(SerializerPolicyEnum highestPriority, SerializerPolicyEnum secondPriority, SerializerPolicyEnum thirdPriority) {
+        return (SerializerPolicyEnum) mergeObject(highestPriority, secondPriority, thirdPriority);
+    }
+
+    private static Object mergeObject(Object highestPriority, Object secondPriority, Object thirdPriority) {
+        if (highestPriority != null) {
+            return highestPriority;
+        } else if (secondPriority != null) {
+            return secondPriority;
+        } else {
+            return thirdPriority;
+        }
     }
 }

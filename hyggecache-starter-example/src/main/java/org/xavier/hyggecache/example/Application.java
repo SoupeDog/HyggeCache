@@ -15,7 +15,7 @@ import org.xavier.hyggecache.enums.SerializerPolicySwitchEnum;
  * @since Jdk 1.8
  */
 @SpringBootApplication
-@EnableHyggeCache(serializerAutoInit = SerializerPolicySwitchEnum.JACKSON, basePackages = {"aaa", "bbb"})
+@EnableHyggeCache(serializerAutoInit = SerializerPolicySwitchEnum.JACKSON, basePackages = {"org.xavier.hyggecache.example"})
 public class Application {
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(Application.class, args);

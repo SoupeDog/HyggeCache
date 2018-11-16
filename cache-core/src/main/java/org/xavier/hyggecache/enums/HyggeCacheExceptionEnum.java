@@ -12,7 +12,8 @@ public enum HyggeCacheExceptionEnum {
     SERIALIZE(0, "Serialize Exception"),
     CACHE_KEY(1, "CacheKey Exception"),
     CACHE_OPERATOR(2, "Cache_Operator Exception"),
-    INVOKE(3, "Invoke Exception");
+    INVOKE(3, "Invoke Exception"),
+    HELPER(4, "Helper Exception");
     private final Integer index;
     private final String description;
 

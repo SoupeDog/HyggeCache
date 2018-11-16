@@ -1,6 +1,8 @@
 package org.xavier.hyggecache.config;
 
 
+import org.xavier.hyggecache.enums.SerializerPolicyEnum;
+
 /**
  * 描述信息：<br/>
  * 全局配置对象
@@ -14,7 +16,20 @@ public class GlobalConfig extends CoreConfig {
     /**
      * cacheKey 前缀
      */
-    private String prefix;
+    protected String prefix;
+
+    /**
+     * 序列化工具类型
+     */
+    protected SerializerPolicyEnum serializerPolicy;
+
+    /**
+     * 序列化工具类型 BeanName ,SerializerPolicyEnum 非 Custom 可不填
+     */
+    protected String serializerName;
+
+    public GlobalConfig() {
+    }
 
     public GlobalConfig(GlobalConfigProperties globalConfigProperties) {
         this.expireInMillis = globalConfigProperties.getExpireInMillis();
@@ -29,5 +44,21 @@ public class GlobalConfig extends CoreConfig {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
+    }
+
+    public SerializerPolicyEnum getSerializerPolicy() {
+        return serializerPolicy;
+    }
+
+    public void setSerializerPolicy(SerializerPolicyEnum serializerPolicy) {
+        this.serializerPolicy = serializerPolicy;
+    }
+
+    public String getSerializerName() {
+        return serializerName;
+    }
+
+    public void setSerializerName(String serializerName) {
+        this.serializerName = serializerName;
     }
 }
