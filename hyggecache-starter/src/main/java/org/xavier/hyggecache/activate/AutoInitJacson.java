@@ -65,6 +65,7 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
     @Bean
     public GlobalConfig globalConfig(GlobalConfigProperties globalConfigProperties) {
         GlobalConfig result = new GlobalConfig(globalConfigProperties);
+        result.setSerializerPolicy(SerializerPolicyEnum.JACKSON);
         return result;
     }
 
@@ -115,7 +116,7 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
         return result;
     }
 
-    @Bean
+    @Bean(BaseCacheOperator.CACHE_OPERATOR_BEAN_NAME)
     public BaseCacheOperator baseCacheOperator() {
         BaseCacheOperator result = null;
         Map<String, BaseCacheOperator> operatorMap = applicationContext.getBeansOfType(BaseCacheOperator.class);
@@ -133,6 +134,7 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
         for (BaseCacheOperator operator : operatorMap.values()) {
             result = operator;
         }
+
         return result;
     }
 
@@ -142,12 +144,11 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
     }
 
     @Bean
-    public AopCacheHelperBuilder aopCacheHelperBuilder(PointcutKeeper pointcutKeeper, BaseCacheOperator baseCacheOperator, SerializerKeeper serializerKeeper, GlobalConfig globalConfig) {
-        return new AopCacheHelperBuilder(applicationContext, baseCacheOperator, serializerKeeper, pointcutKeeper, globalConfig);
+    public AopCacheHelperBuilder aopCacheHelperBuilder(PointcutKeeper pointcutKeeper, BaseCacheOperator default_CacheOperator, SerializerKeeper serializerKeeper, GlobalConfig globalConfig) {
+        return new AopCacheHelperBuilder(applicationContext, default_CacheOperator, serializerKeeper, pointcutKeeper, globalConfig);
     }
 
     @Bean(name = CacheAdvisor.CACHE_ADVISOR_BEAN_NAME)
-    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public CacheAdvisor cacheAdvisor(AopCacheHelperBuilder aopCacheHelperBuilder) {
         CachePointCut cachePointCut = new CachePointCut(basePackages, aopCacheHelperBuilder, aopCacheHelperBuilder.getPointcutKeeper());
         CacheAdvisor advisor = new CacheAdvisor(cachePointCut);

@@ -14,14 +14,14 @@ import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
  */
 public class CacheAdvisor extends AbstractBeanFactoryPointcutAdvisor {
     public static final String CACHE_ADVISOR_BEAN_NAME = "HyggeCacheAdvisor";
-    private CachePointCut defaultPoinCut;
+    private Pointcut defaultPoinCut;
 
-    public CacheAdvisor(CachePointCut defaultPoinCut) {
+    public CacheAdvisor(Pointcut defaultPoinCut) {
         this.defaultPoinCut = defaultPoinCut;
     }
 
     @Override
     public Pointcut getPointcut() {
-        return this.defaultPoinCut;
+        return defaultPoinCut;
     }
 }

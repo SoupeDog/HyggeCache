@@ -2,11 +2,13 @@ package org.xavier.hyggecache.builder;
 
 import org.springframework.context.ApplicationContext;
 import org.xavier.hyggecache.annotation.CachedConfig;
+import org.xavier.hyggecache.config.CacheOperatorConfig;
 import org.xavier.hyggecache.config.ConfigForMerge;
 import org.xavier.hyggecache.config.GlobalConfig;
 import org.xavier.hyggecache.enums.HyggeCacheExceptionEnum;
 import org.xavier.hyggecache.enums.ImplementsType;
 import org.xavier.hyggecache.exception.HyggeCacheRuntimeException;
+import org.xavier.hyggecache.helper.AoPCacheHelper;
 import org.xavier.hyggecache.helper.AopGetCacheHelper;
 import org.xavier.hyggecache.helper.AopInvalidateCacheHelper;
 import org.xavier.hyggecache.helper.AopPutCacheHelper;
@@ -54,6 +56,7 @@ public class AopCacheHelperBuilder {
         result.setCacheOperator(cacheOperator);
         BaseSerializer targetSerializer = getSerializer(configForMerge);
         result.setSerializer(targetSerializer);
+        initOperatorConfigForHelper(result, configForMerge);
         return result;
     }
 
@@ -68,6 +71,7 @@ public class AopCacheHelperBuilder {
         result.setCacheOperator(cacheOperator);
         BaseSerializer targetSerializer = getSerializer(configForMerge);
         result.setSerializer(targetSerializer);
+        initOperatorConfigForHelper(result, configForMerge);
         return result;
     }
 
@@ -79,6 +83,7 @@ public class AopCacheHelperBuilder {
         result.setCacheOperatorConfig(configForMerge.toCacheOperatorConfig());
         result.setCacheNullValue(configForMerge.getCacheNullValue());
         result.setCacheOperator(cacheOperator);
+        initOperatorConfigForHelper(result, configForMerge);
         return result;
     }
 
@@ -102,6 +107,14 @@ public class AopCacheHelperBuilder {
             throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.SERIALIZE, "Serializer was null. | SerializerInfo : " + configForMerge.getSerializerPolicy().name() + " | " + configForMerge.getSerializerName());
         }
         return targetSerializer;
+    }
+
+    private void initOperatorConfigForHelper(AoPCacheHelper result, ConfigForMerge configForMerge) {
+        CacheOperatorConfig operatorConfig=new CacheOperatorConfig();
+        operatorConfig.setPrefix(configForMerge.getKeyExpression());
+        operatorConfig.setExpireInMillis(configForMerge.getExpireInMillis());
+        operatorConfig.setNullValueExpireInMillis(configForMerge.getNullValueExpireInMillis());
+        result.setCacheOperatorConfig(operatorConfig);
     }
 
     public PointcutKeeper getPointcutKeeper() {

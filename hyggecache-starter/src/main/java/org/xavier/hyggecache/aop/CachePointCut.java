@@ -49,13 +49,11 @@ public class CachePointCut extends StaticMethodMatcherPointcut implements ClassF
 
     @Override
     public boolean matches(Class<?> clazz) {
-        System.out.println(clazz);
         return classCheck(clazz);
     }
 
     @Override
     public boolean matches(Method method, Class<?> targetClass) {
-        System.out.println(method);
         boolean result = packageCheack(targetClass);
         BaseCacheHelper cacheHelper;
         if (result) {

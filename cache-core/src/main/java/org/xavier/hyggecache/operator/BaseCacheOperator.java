@@ -15,6 +15,7 @@ import java.util.Optional;
  * @since Jdk 1.8
  */
 public abstract class BaseCacheOperator<K> {
+    public static final String CACHE_OPERATOR_BEAN_NAME="default_CacheOperator";
 
     /**
      * 缓存 null 对象标识的实际值

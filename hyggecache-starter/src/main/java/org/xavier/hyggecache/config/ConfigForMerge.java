@@ -31,6 +31,7 @@ public class ConfigForMerge extends GlobalConfig {
         initNullValueExpireInMillis(cacheAnnotationTemp, cachedConfig, globalConfig);
         initSerializerPolicy(cacheAnnotationTemp, cachedConfig, globalConfig);
         initSerializerName(cacheAnnotationTemp, cachedConfig, globalConfig);
+        initSerializeTypeInfoKey(cacheAnnotationTemp, cachedConfig, globalConfig);
     }
 
     public CacheOperatorConfig toCacheOperatorConfig() {
@@ -48,12 +49,15 @@ public class ConfigForMerge extends GlobalConfig {
         if (cacheAnnotationTemp instanceof Cacheable) {
             Cacheable cacheAnnotation = (Cacheable) cacheAnnotationTemp;
             highestPriority = getAsString(cacheAnnotation.prefix());
+            this.keyExpression = cacheAnnotation.key();
         } else if (cacheAnnotationTemp instanceof CacheUpdate) {
             CacheUpdate cacheAnnotation = (CacheUpdate) cacheAnnotationTemp;
             highestPriority = getAsString(cacheAnnotation.prefix());
+            this.keyExpression = cacheAnnotation.key();
         } else if (cacheAnnotationTemp instanceof CacheInvalidate) {
             CacheInvalidate cacheAnnotation = (CacheInvalidate) cacheAnnotationTemp;
             highestPriority = getAsString(cacheAnnotation.prefix());
+            this.keyExpression = cacheAnnotation.key();
         } else {
             highestPriority = null;
         }

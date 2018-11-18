@@ -1,6 +1,8 @@
 package org.xavier.hyggecache.example.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.aop.Pointcut;
+import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,8 +48,7 @@ public class Config {
     public RedisCacheOperator redisCacheOperator(ApplicationContext applicationContext) {
         Map<String, JedisConnectionFactory> map = applicationContext.getBeansOfType(JedisConnectionFactory.class);
         System.out.println("JedisConnectionFactory:" + map.size());
-        //        RedisCacheOperator result = new RedisCacheOperator((Jedis) jedisConnectionFactory.getConnection().getNativeConnection());
-        RedisCacheOperator result = null;
+         RedisCacheOperator result = new RedisCacheOperator(null);
         return result;
     }
 }

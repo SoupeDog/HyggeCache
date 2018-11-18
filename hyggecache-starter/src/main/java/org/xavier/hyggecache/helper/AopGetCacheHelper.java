@@ -17,7 +17,7 @@ import java.util.function.Function;
  * @date 2018.11.15
  * @since Jdk 1.8
  */
-public class AopGetCacheHelper<K> extends BaseGetCacheHelper<K> {
+public class AopGetCacheHelper<K> extends BaseGetCacheHelper<K> implements AoPCacheHelper{
     /**
      * 被执行缓存 AOP 方法的具体实现类
      */

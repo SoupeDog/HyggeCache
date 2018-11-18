@@ -16,7 +16,7 @@ import java.util.Optional;
  * @date 2018.11.15
  * @since Jdk 1.8
  */
-public class AopPutCacheHelper<K> extends BasePutCacheHelper<K> {
+public class AopPutCacheHelper<K> extends BasePutCacheHelper<K> implements AoPCacheHelper{
     /**
      * 被执行缓存 AOP 方法的具体实现类
      */
