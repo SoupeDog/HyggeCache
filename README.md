@@ -32,6 +32,21 @@ hyggecache.default.cacheNullValue=true
 hyggecache.default.nullValueExpireInMillis=5000
 ```
 
+## 特殊序列化类型的声明
+BeanName 可任意，当 BeanName 为 ``JACSON_DEFAULT_NAME_CUSTOM`` 或者 ``FASTJSON_DEFAULT_NAME_CUSTOM`` 为替换默认的 ``TypeInfoKeeper`` 对象，否则会存在多个 ``TypeInfoKeeper`` 实例，序列化代理需要额外指定自身所依赖的具体 ``TypeInfoKeeper`` 对象
+
+```
+    @Bean(TypeInfoKeeper.JACSON_DEFAULT_NAME_CUSTOM)
+    public TypeInfoKeeper typeInfoKeeper() {
+        TypeInfoKeeper<TypeReference> typeInfoKeeper = new TypeInfoKeeper(SerializerPolicyEnum.JACKSON);
+        typeInfoKeeper.saveTypeReference("customType", new TypeInfo<ArrayList<HashMap<String, Cat>>>() {
+        });
+        ……
+        return typeInfoKeeper;
+    }
+```
+
+
 ## 为目标方法执行缓存逻辑
 
 ``key`` 内容为 [SpEL](https://docs.spring.io/spring/docs/4.2.x/spring-framework-reference/html/expressions.html)
@@ -74,13 +89,13 @@ public class CatServiceImpl implements CatService {
 ```
 @CachedConfig(prefix = "u:")
 public interface UserService {
-    @Cacheable(key = "#id.toString()")
+    @Cacheable(key = "#id")
     User getUserById(int id);
 
-    @CacheInvalidate(key = "#user.id.toString()")
+    @CacheInvalidate(key = "#user.id")
     void saveUser(User user);
 
-    @CacheUpdate(key = "#user.id.toString()")
+    @CacheUpdate(key = "#user.id")
     void updateUser(User user);
 }
 ```
