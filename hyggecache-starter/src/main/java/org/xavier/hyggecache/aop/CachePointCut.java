@@ -59,26 +59,39 @@ public class CachePointCut extends StaticMethodMatcherPointcut implements ClassF
         if (result) {
             result = annotationCheack(method);
             if (result) {
-                switch (getCacheHelperType(method)) {
-                    case GET:
-                        cacheHelper = cacheHelperBuilder.createGet(AnnotationUtils.getAnnotation(method, Cacheable.class), getCachedConfigOnClass(targetClass), getMethod_Impl(targetClass, method));
-                        pointcutKeeper.putHandlerIfAbsent(method, targetClass, cacheHelper);
-                        break;
-                    case PUT:
-                        cacheHelper = cacheHelperBuilder.createPut(AnnotationUtils.getAnnotation(method, CacheUpdate.class), getCachedConfigOnClass(targetClass), getMethod_Impl(targetClass, method));
-                        pointcutKeeper.putHandlerIfAbsent(method, targetClass, cacheHelper);
-                        break;
-                    case INVALIDATE:
-                        cacheHelper = cacheHelperBuilder.createInvalidate(AnnotationUtils.getAnnotation(method, CacheInvalidate.class), getCachedConfigOnClass(targetClass), getMethod_Impl(targetClass, method));
-                        pointcutKeeper.putHandlerIfAbsent(method, targetClass, cacheHelper);
-                        break;
-                    default:
-                }
+                initCacheHelper(method, method, targetClass);
             } else {
-                System.err.println("AaA");
+                // 从实现类的接口上找注解
+                Method methodWithAnnotation = getMethod_InterFace(targetClass, method);
+                if (methodWithAnnotation != null) {
+                    initCacheHelper(method, methodWithAnnotation, targetClass);
+                    result = true;
+                }
             }
         }
+        if (!result) {
+            System.err.println(method.getName() + " 无需拦截");
+        }
         return result;
+    }
+
+    private void initCacheHelper(Method methodForPointcutMarker, Method methodWithAnnotation, Class<?> targetClass) {
+        BaseCacheHelper cacheHelper;
+        switch (getCacheHelperType(methodWithAnnotation)) {
+            case GET:
+                cacheHelper = cacheHelperBuilder.createGet(AnnotationUtils.getAnnotation(methodWithAnnotation, Cacheable.class), getCachedConfigOnClass(targetClass), getMethod_Impl(targetClass, methodWithAnnotation));
+                pointcutKeeper.putHandlerIfAbsent(methodForPointcutMarker, targetClass, cacheHelper);
+                break;
+            case PUT:
+                cacheHelper = cacheHelperBuilder.createPut(AnnotationUtils.getAnnotation(methodWithAnnotation, CacheUpdate.class), getCachedConfigOnClass(targetClass), getMethod_Impl(targetClass, methodWithAnnotation));
+                pointcutKeeper.putHandlerIfAbsent(methodForPointcutMarker, targetClass, cacheHelper);
+                break;
+            case INVALIDATE:
+                cacheHelper = cacheHelperBuilder.createInvalidate(AnnotationUtils.getAnnotation(methodWithAnnotation, CacheInvalidate.class), getCachedConfigOnClass(targetClass), getMethod_Impl(targetClass, methodWithAnnotation));
+                pointcutKeeper.putHandlerIfAbsent(methodForPointcutMarker, targetClass, cacheHelper);
+                break;
+            default:
+        }
     }
 
     public Boolean classCheck(Class<?> aClass) {
@@ -147,6 +160,24 @@ public class CachePointCut extends StaticMethodMatcherPointcut implements ClassF
             }
         }
         throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.HELPER, "Implement of " + targetClass.getName() + " - " + method.getName() + " was not found.");
+    }
+
+    private Method getMethod_InterFace(Class<?> targetClass, Method method) {
+        String originalMethodName = method.getName();
+        Class<?>[] originalMethodParamTypes = method.getParameterTypes();
+        // 仅向上找一层的父级接口
+        Class<?>[] interface_Lv1 = targetClass.getInterfaces();
+        for (Class currentInterface : interface_Lv1) {
+            Method[] methods = currentInterface.getMethods();
+            for (Method methodTemp : methods) {
+                if (methodMatch(originalMethodName, methodTemp, originalMethodParamTypes)) {
+                    if (annotationCheack(methodTemp)) {
+                        return methodTemp;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 
