@@ -7,7 +7,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.xavier.hyggecache.enums.SerializerPolicyEnum;
+import org.xavier.hyggecache.example.model.Cat;
 import org.xavier.hyggecache.keeper.TypeInfoKeeper;
 import org.xavier.hyggecache.operator.redis.RedisCacheOperator;
 import org.xavier.hyggecache.serializer.TypeInfo;
@@ -31,7 +33,7 @@ public class Config {
     @Bean(TypeInfoKeeper.JACSON_DEFAULT_NAME_CUSTOM)
     public TypeInfoKeeper typeInfoKeeper() {
         TypeInfoKeeper<TypeReference> typeInfoKeeper = new TypeInfoKeeper(SerializerPolicyEnum.JACKSON);
-        typeInfoKeeper.saveTypeReference("customType", new TypeInfo<ArrayList<HashMap<String, ArrayList<Integer>>>>() {
+        typeInfoKeeper.saveTypeReference("customType", new TypeInfo<ArrayList<HashMap<String, Cat>>>() {
         });
         return typeInfoKeeper;
     }
@@ -39,16 +41,14 @@ public class Config {
     @Bean("another")
     public TypeInfoKeeper typeInfoKeeper2() {
         TypeInfoKeeper<TypeReference> typeInfoKeeper = new TypeInfoKeeper(SerializerPolicyEnum.JACKSON);
-        typeInfoKeeper.saveTypeReference("anotherCustomType", new TypeInfo<ArrayList<HashMap<String, ArrayList<Integer>>>>() {
+        typeInfoKeeper.saveTypeReference("anotherCustomType", new TypeInfo<ArrayList<HashMap<Integer, ArrayList<Integer>>>>() {
         });
         return typeInfoKeeper;
     }
 
     @Bean
-    public RedisCacheOperator redisCacheOperator(ApplicationContext applicationContext) {
-        Map<String, JedisConnectionFactory> map = applicationContext.getBeansOfType(JedisConnectionFactory.class);
-        System.out.println("JedisConnectionFactory:" + map.size());
-         RedisCacheOperator result = new RedisCacheOperator(null);
+    public RedisCacheOperator redisCacheOperator(JedisConnectionFactory jedisConnectionFactory) {
+        RedisCacheOperator result = new RedisCacheOperator((Jedis) jedisConnectionFactory.getConnection().getNativeConnection());
         return result;
     }
 }

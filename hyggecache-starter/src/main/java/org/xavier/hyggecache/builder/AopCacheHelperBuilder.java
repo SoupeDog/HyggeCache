@@ -47,7 +47,7 @@ public class AopCacheHelperBuilder {
 
     public AopGetCacheHelper createGet(Object cacheAnnotationTemp, CachedConfig cachedConfig, Method methodImpl) {
         AopGetCacheHelper result = new AopGetCacheHelper(ImplementsType.REDIS);
-        ConfigForMerge configForMerge = new ConfigForMerge(cacheAnnotationTemp, cachedConfig, globalConfig);
+        ConfigForMerge configForMerge = new ConfigForMerge(cacheAnnotationTemp, cachedConfig, globalConfig, methodImpl.getReturnType());
         result.setMethodImpl(methodImpl);
         result.setKeyExpression(configForMerge.getKeyExpression());
         result.setCacheOperatorConfig(configForMerge.toCacheOperatorConfig());
@@ -56,13 +56,12 @@ public class AopCacheHelperBuilder {
         result.setCacheOperator(cacheOperator);
         BaseSerializer targetSerializer = getSerializer(configForMerge);
         result.setSerializer(targetSerializer);
-        initOperatorConfigForHelper(result, configForMerge);
         return result;
     }
 
     public AopPutCacheHelper createPut(Object cacheAnnotationTemp, CachedConfig cachedConfig, Method methodImpl) {
         AopPutCacheHelper result = new AopPutCacheHelper(ImplementsType.REDIS);
-        ConfigForMerge configForMerge = new ConfigForMerge(cacheAnnotationTemp, cachedConfig, globalConfig);
+        ConfigForMerge configForMerge = new ConfigForMerge(cacheAnnotationTemp, cachedConfig, globalConfig, methodImpl.getReturnType());
         result.setMethodImpl(methodImpl);
         result.setKeyExpression(configForMerge.getKeyExpression());
         result.setCacheOperatorConfig(configForMerge.toCacheOperatorConfig());
@@ -71,19 +70,17 @@ public class AopCacheHelperBuilder {
         result.setCacheOperator(cacheOperator);
         BaseSerializer targetSerializer = getSerializer(configForMerge);
         result.setSerializer(targetSerializer);
-        initOperatorConfigForHelper(result, configForMerge);
         return result;
     }
 
     public AopInvalidateCacheHelper createInvalidate(Object cacheAnnotationTemp, CachedConfig cachedConfig, Method methodImpl) {
         AopInvalidateCacheHelper result = new AopInvalidateCacheHelper(ImplementsType.REDIS);
-        ConfigForMerge configForMerge = new ConfigForMerge(cacheAnnotationTemp, cachedConfig, globalConfig);
+        ConfigForMerge configForMerge = new ConfigForMerge(cacheAnnotationTemp, cachedConfig, globalConfig, methodImpl.getReturnType());
         result.setMethodImpl(methodImpl);
         result.setKeyExpression(configForMerge.getKeyExpression());
         result.setCacheOperatorConfig(configForMerge.toCacheOperatorConfig());
         result.setCacheNullValue(configForMerge.getCacheNullValue());
         result.setCacheOperator(cacheOperator);
-        initOperatorConfigForHelper(result, configForMerge);
         return result;
     }
 
@@ -107,14 +104,6 @@ public class AopCacheHelperBuilder {
             throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.SERIALIZE, "Serializer was null. | SerializerInfo : " + configForMerge.getSerializerPolicy().name() + " | " + configForMerge.getSerializerName());
         }
         return targetSerializer;
-    }
-
-    private void initOperatorConfigForHelper(AoPCacheHelper result, ConfigForMerge configForMerge) {
-        CacheOperatorConfig operatorConfig=new CacheOperatorConfig();
-        operatorConfig.setPrefix(configForMerge.getKeyExpression());
-        operatorConfig.setExpireInMillis(configForMerge.getExpireInMillis());
-        operatorConfig.setNullValueExpireInMillis(configForMerge.getNullValueExpireInMillis());
-        result.setCacheOperatorConfig(operatorConfig);
     }
 
     public PointcutKeeper getPointcutKeeper() {

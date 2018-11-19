@@ -40,7 +40,7 @@ public class CatServiceImpl implements CatService {
     }
 
     @Override
-    @Cacheable( key = "#catId")
+    @Cacheable(key = "#catId")
     public Cat getCatById(String catId) {
         if (catId.equals("1")) {
             Cat cat = new Cat();

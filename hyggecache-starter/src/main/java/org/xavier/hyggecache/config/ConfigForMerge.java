@@ -23,7 +23,12 @@ public class ConfigForMerge extends GlobalConfig {
 
     private String serializeTypeInfoKey;
 
-    public ConfigForMerge(Object cacheAnnotationTemp, CachedConfig cachedConfig, GlobalConfig globalConfig) {
+    /**
+     * 被拦截方法的返回值类型
+     */
+    private Class returnClass;
+
+    public ConfigForMerge(Object cacheAnnotationTemp, CachedConfig cachedConfig, GlobalConfig globalConfig, Class returnClass) {
         super();
         initPrefix(cacheAnnotationTemp, cachedConfig, globalConfig);
         initExpireInMillis(cacheAnnotationTemp, cachedConfig, globalConfig);
@@ -32,15 +37,21 @@ public class ConfigForMerge extends GlobalConfig {
         initSerializerPolicy(cacheAnnotationTemp, cachedConfig, globalConfig);
         initSerializerName(cacheAnnotationTemp, cachedConfig, globalConfig);
         initSerializeTypeInfoKey(cacheAnnotationTemp, cachedConfig, globalConfig);
+        this.returnClass = returnClass;
     }
 
     public CacheOperatorConfig toCacheOperatorConfig() {
         CacheOperatorConfig result = new CacheOperatorConfig();
+        result.setExpireInMillis(expireInMillis);
+        result.setNullValueExpireInMillis(nullValueExpireInMillis);
+        result.setPrefix(prefix);
         return result;
     }
 
     public SerializerConfig toSerializerConfig() {
         SerializerConfig result = new SerializerConfig();
+        result.setReturnClass(returnClass);
+        result.setTypeInfoName(serializeTypeInfoKey);
         return result;
     }
 
@@ -50,10 +61,12 @@ public class ConfigForMerge extends GlobalConfig {
             Cacheable cacheAnnotation = (Cacheable) cacheAnnotationTemp;
             highestPriority = getAsString(cacheAnnotation.prefix());
             this.keyExpression = cacheAnnotation.key();
+            this.serializeTypeInfoKey = cacheAnnotation.serializeTypeInfoKey();
         } else if (cacheAnnotationTemp instanceof CacheUpdate) {
             CacheUpdate cacheAnnotation = (CacheUpdate) cacheAnnotationTemp;
             highestPriority = getAsString(cacheAnnotation.prefix());
             this.keyExpression = cacheAnnotation.key();
+            this.serializeTypeInfoKey = cacheAnnotation.serializeTypeInfoKey();
         } else if (cacheAnnotationTemp instanceof CacheInvalidate) {
             CacheInvalidate cacheAnnotation = (CacheInvalidate) cacheAnnotationTemp;
             highestPriority = getAsString(cacheAnnotation.prefix());
@@ -182,5 +195,13 @@ public class ConfigForMerge extends GlobalConfig {
 
     public void setSerializeTypeInfoKey(String serializeTypeInfoKey) {
         this.serializeTypeInfoKey = serializeTypeInfoKey;
+    }
+
+    public Class getReturnClass() {
+        return returnClass;
+    }
+
+    public void setReturnClass(Class returnClass) {
+        this.returnClass = returnClass;
     }
 }
