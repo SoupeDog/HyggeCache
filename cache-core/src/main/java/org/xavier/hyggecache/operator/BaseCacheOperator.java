@@ -2,6 +2,8 @@ package org.xavier.hyggecache.operator;
 
 import org.xavier.hyggecache.config.CacheOperatorConfig;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 
@@ -62,7 +64,7 @@ public abstract class BaseCacheOperator<K> {
      * 检测是否为 缓存 null 标识 <br/> true : null 标识
      */
     public Boolean isNullFlag(byte[] checkTarget) {
-        Boolean result = NULL_VALUE.equals(checkTarget);
+        Boolean result = Arrays.equals(NULL_VALUE,checkTarget);
         return result;
     }
 }

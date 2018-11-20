@@ -131,7 +131,7 @@ public class CachePointCut extends StaticMethodMatcherPointcut implements ClassF
         return result;
     }
 
-    private boolean methodMatch(String originalMethodName, Method method, Class<?>[] paramTypes) {
+    private Boolean methodMatch(String originalMethodName, Method method, Class<?>[] paramTypes) {
         if (!Modifier.isPublic(method.getModifiers())) {
             return false;
         }
