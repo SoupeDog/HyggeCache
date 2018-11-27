@@ -47,7 +47,6 @@ public class AnnotationPropertiesHelper {
     }
 
     public static SerializerPolicyEnum getAsSerializerPolicyEnum(String target, SerializerPolicyEnum defaultWhenUnexpected) {
-        SerializerPolicyEnum result = null;
         switch (target.trim().toUpperCase()) {
             case "JACKSON":
                 return SerializerPolicyEnum.JACKSON;

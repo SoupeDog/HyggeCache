@@ -67,6 +67,7 @@ public class AopInvalidateCacheHelper<K> extends BaseInvalidateCacheHelper<K> im
         return cacheOperatorConfig;
     }
 
+    @Override
     public void setCacheOperatorConfig(CacheOperatorConfig cacheOperatorConfig) {
         this.cacheOperatorConfig = cacheOperatorConfig;
     }

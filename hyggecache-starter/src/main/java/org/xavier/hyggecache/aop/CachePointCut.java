@@ -55,7 +55,6 @@ public class CachePointCut extends StaticMethodMatcherPointcut implements ClassF
     @Override
     public boolean matches(Method method, Class<?> targetClass) {
         boolean result = packageCheack(targetClass);
-        BaseCacheHelper cacheHelper;
         if (result) {
             result = annotationCheack(method);
             if (result) {

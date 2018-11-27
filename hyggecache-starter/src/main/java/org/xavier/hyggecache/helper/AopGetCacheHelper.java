@@ -98,6 +98,7 @@ public class AopGetCacheHelper<K> extends BaseGetCacheHelper<K> implements AoPCa
         return cacheOperatorConfig;
     }
 
+    @Override
     public void setCacheOperatorConfig(CacheOperatorConfig cacheOperatorConfig) {
         this.cacheOperatorConfig = cacheOperatorConfig;
     }
