@@ -17,7 +17,7 @@ import java.util.Optional;
  * @since Jdk 1.8
  */
 public abstract class BaseCacheOperator<K> {
-    public static final String CACHE_OPERATOR_BEAN_NAME="default_CacheOperator";
+    public static final String CACHE_OPERATOR_BEAN_NAME = "default_CacheOperator";
 
     /**
      * 缓存 null 对象标识的实际值
@@ -59,12 +59,19 @@ public abstract class BaseCacheOperator<K> {
      */
     public abstract void putNullValue(CacheOperatorConfig config, K cacheKey);
 
+    /**
+     * 获取远程缓存连接对象，该方法内部应实断开连接自检并自动重连，最终返回连接状态的连接对象
+     *
+     * @return 可用的连接对象
+     */
+    public abstract Object getConnection();
+
 
     /**
      * 检测是否为 缓存 null 标识 <br/> true : null 标识
      */
     public Boolean isNullFlag(byte[] checkTarget) {
-        Boolean result = Arrays.equals(NULL_VALUE,checkTarget);
+        Boolean result = Arrays.equals(NULL_VALUE, checkTarget);
         return result;
     }
 }

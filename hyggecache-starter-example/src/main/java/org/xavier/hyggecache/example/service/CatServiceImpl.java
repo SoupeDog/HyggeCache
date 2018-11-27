@@ -42,11 +42,11 @@ public class CatServiceImpl implements CatService {
     @Override
     @Cacheable(key = "#catId")
     public Cat getCatById(String catId) {
+        System.out.println("真实调用 CatServiceImpl");
         if (catId.equals("1")) {
             Cat cat = new Cat();
             cat.setCatId(catId);
             cat.setCatName("Dog_" + catId);
-            System.out.println("真实调用 CatServiceImpl");
             return cat;
         } else {
             return null;
