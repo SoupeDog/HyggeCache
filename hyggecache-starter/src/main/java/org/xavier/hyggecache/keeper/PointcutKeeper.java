@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentMap;
  * @since Jdk 1.8
  */
 public class PointcutKeeper {
-    private ConcurrentMap<PointcutMarker, BaseCacheHelper> handlers = new ConcurrentHashMap(64);
+    private volatile ConcurrentMap<PointcutMarker, BaseCacheHelper> handlers = new ConcurrentHashMap(64);
 
     /**
      * 查询 BaseCacheHelper 缓存
