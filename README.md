@@ -43,7 +43,13 @@ hyggecache.default.nullValueExpireInMillis=5000
 ```
 
 ## 特殊序列化类型的声明
-BeanName 可任意，当 BeanName 为 ``JACSON_DEFAULT_NAME_CUSTOM`` 或者 ``FASTJSON_DEFAULT_NAME_CUSTOM`` 为替换默认的 ``TypeInfoKeeper`` 对象，否则会存在多个 ``TypeInfoKeeper`` 实例，序列化代理需要额外指定自身所依赖的具体 ``TypeInfoKeeper`` 对象
+当您希望启用缓存方法的返回值类型属于简单类型，如 String、Integer、User 时，可忽略这一项， ``HyggeCache`` 将会自动识别，并为其序列化反序列化提供支持。
+
+若您希望启用缓存方法的返回值类型属于复杂类型，如 ArrayList&lt;User&gt;,则需要注册相应的序列化信息，您只需注册包含一个或多个 ``TypeInfo`` 的 ``TypeInfoKeeper`` 对象的 Bean ，然后为注解属性 ``serializeTypeInfoKey`` 赋值为 ``TypeInfo`` 存储时的 ``key`` 即可。
+
+BeanName 可任意，当 BeanName 为 ``JACSON_DEFAULT_NAME_CUSTOM`` 或者 ``FASTJSON_DEFAULT_NAME_CUSTOM`` 时，将替换默认自动生成的 ``TypeInfoKeeper`` 对象，否则运行环境会存在多个 ``TypeInfoKeeper`` 实例，并且序列化代理需要指定自身所依赖的具体 ``TypeInfoKeeper`` 对象
+
+任意可注册 Bean 对象处：
 
 ```
     @Bean(TypeInfoKeeper.JACSON_DEFAULT_NAME_CUSTOM)
@@ -53,6 +59,16 @@ BeanName 可任意，当 BeanName 为 ``JACSON_DEFAULT_NAME_CUSTOM`` 或者 ``FA
         });
         ……
         return typeInfoKeeper;
+    }
+```
+
+希望启用缓存的方法处：
+
+```
+    @Cacheable(serializeTypeInfoKey = "customType", key = "#size+':customType'")
+    public ArrayList<HashMap<String, Cat>> customType(自定义的入参) {
+         // 查询逻辑
+        return 查询结果;
     }
 ```
 
