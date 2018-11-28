@@ -13,10 +13,30 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = "hyggecache.default")
 public class GlobalConfigProperties {
+    /**
+     * 默认缓存过期时间(毫秒)，默认 1 小时
+     */
     private Long expireInMillis;
+    /**
+     * 是否为不存在的查询结果进行 null 标识，默认 标识
+     */
     private Boolean cacheNullValue;
+    /**
+     * 默认 null 标识过期时间(毫秒)，默认 5 秒
+     */
     private Long nullValueExpireInMillis;
+    /**
+     * 默认的缓存 key 前缀
+     */
     private String prefix;
+    /**
+     * 热点 key 最小 QPS
+     */
+    private Integer hotKeyMinQPS;
+    /**
+     * 热点 key 刷新检测间隔
+     */
+    private Long hotKeyRescueDelta;
 
     public Long getExpireInMillis() {
         return expireInMillis == null ? 3600000L : expireInMillis;
