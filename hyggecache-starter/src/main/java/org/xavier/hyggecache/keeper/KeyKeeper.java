@@ -47,7 +47,7 @@ public class KeyKeeper<K> {
         ArrayList<SortItem> sortList = snapshot();
         Integer topKIndex = getTopKIndex(sortList, 0, sortList.size() - 1, k);
         ArrayList<K> result = new ArrayList(k);
-        for (int i = topKIndex; i < sortList.size(); i++) {
+        for (int i = 0; i <= topKIndex; i++) {
             result.add(sortList.get(i).getKey());
         }
         return result;
@@ -72,11 +72,11 @@ public class KeyKeeper<K> {
             return low;
         }
         Integer partitionIndex = partition(target, low, high);
-        // 集合前半部分元素个数
+        // 集合前半部分元素个数即当前索引是第几大的数据
         Integer headPartSize = partitionIndex - low;
         if (headPartSize >= k) {
             //求前半部分第k大
-            return getTopKIndex(target, low, partitionIndex - partitionIndex, k);
+            return getTopKIndex(target, low, partitionIndex - 1, k);
         } else {
             //求后半部分第k-i大
             return getTopKIndex(target, partitionIndex, high, k - headPartSize);
@@ -90,16 +90,16 @@ public class KeyKeeper<K> {
         while (high > low) {
             System.out.println(target);
             // 右侧往左寻找一个比 partitionCount 大的
-            while (target.get(high).getCurrentCount() >= partitionCount && high > low) {
+            while (target.get(high).getCurrentCount() <= partitionCount && high > low) {
                 high--;
             }
             // 左侧往右寻找一个比 partitionCount 小的
-            while (target.get(low).getCurrentCount() < partitionCount && high > low) {
+            while (target.get(low).getCurrentCount() >= partitionCount && high > low) {
                 low++;
             }
             Collections.swap(target, low, high);
         }
-        if (target.get(rowIndex).getCurrentCount() > target.get(low).getCurrentCount()) {
+        if (target.get(rowIndex).getCurrentCount() < target.get(low).getCurrentCount()) {
             Collections.swap(target, rowIndex, low);
             System.out.println(target);
         }
@@ -168,7 +168,7 @@ public class KeyKeeper<K> {
             keyKeeper.count("38");
         }
 
-        ArrayList<String> r = keyKeeper.getOrderedTopK(7);
+        ArrayList<String> r = keyKeeper.getOrderedTopK(1);
         System.out.println(r);
 
     }
