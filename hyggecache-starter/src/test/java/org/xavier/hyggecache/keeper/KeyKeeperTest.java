@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.xavier.hyggecache.utils.bo.CacheKeySortItem;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 描述信息：<br/>
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 public class KeyKeeperTest {
     @Test
     public void sort_Test() throws JsonProcessingException {
-        KeyKeeper<String> keyKeeper = new KeyKeeper(16, 0.75F);
+        KeyKeeper<String> keyKeeper = new KeyKeeper(null, 16, 0.75F);
         for (int i = 0; i < 888; i++) {
             keyKeeper.count("888");
         }
@@ -60,6 +61,4 @@ public class KeyKeeperTest {
         Assert.assertEquals(888, rsult.get(1).getCount());
         Assert.assertEquals(777, rsult.get(2).getCount());
     }
-
-
 }
