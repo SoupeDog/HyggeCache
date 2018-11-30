@@ -1,7 +1,9 @@
 package org.xavier.hyggecache.keeper;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,7 +46,7 @@ public class KeyKeeper<K> {
      * @return 无序集合中的最大的前 k 个数组成的集合
      */
     public ArrayList<K> getOrderedTopK(Integer k) {
-        ArrayList<SortItem> sortList = snapshot();
+        List<SortItem> sortList = snapshot();
         Integer topKIndex = getTopKIndex(sortList, 0, sortList.size() - 1, k);
         ArrayList<K> result = new ArrayList(k);
         for (int i = 0; i <= topKIndex; i++) {
@@ -59,20 +61,20 @@ public class KeyKeeper<K> {
      *
      * @return keyMap 等待排序的 key
      */
-    private ArrayList<SortItem> snapshot() {
-        ArrayList<SortItem> sortTemp = new ArrayList(defaultSize);
+    private LinkedList<SortItem> snapshot() {
+        LinkedList<SortItem> sortTemp = new LinkedList();
         for (Map.Entry<K, AtomicInteger> entry : keyMap.entrySet()) {
             sortTemp.add(new SortItem(entry.getKey(), entry.getValue().get()));
         }
         return sortTemp;
     }
 
-    private Integer getTopKIndex(ArrayList<SortItem> target, Integer low, Integer high, Integer k) {
+    private Integer getTopKIndex(List<SortItem> target, Integer low, Integer high, Integer k) {
         if (low.equals(high)) {
             return low;
         }
         Integer partitionIndex = partition(target, low, high);
-        // 集合前半部分元素个数即当前索引是第几大的数据
+        // 集合前半部分元素个数
         Integer headPartSize = partitionIndex - low;
         if (headPartSize >= k) {
             //求前半部分第k大
@@ -83,10 +85,11 @@ public class KeyKeeper<K> {
         }
     }
 
-    private Integer partition(ArrayList<SortItem> target, Integer low, Integer high) {
-        Integer rowIndex = low;
-        low++;
+    private Integer partition(List<SortItem> target, Integer low, Integer high) {
         Integer partitionCount = target.get(low).getCurrentCount();
+        SortItem temp = target.get(low);
+        Integer rowPartitionCountIndex = low;
+        low++;
         while (high > low) {
             System.out.println(target);
             // 右侧往左寻找一个比 partitionCount 大的
@@ -97,13 +100,17 @@ public class KeyKeeper<K> {
             while (target.get(low).getCurrentCount() >= partitionCount && high > low) {
                 low++;
             }
-            Collections.swap(target, low, high);
+            if (!low.equals(high)) {
+                Collections.swap(target, low, high);
+            }
         }
-        if (target.get(rowIndex).getCurrentCount() < target.get(low).getCurrentCount()) {
-            Collections.swap(target, rowIndex, low);
-            System.out.println(target);
+        target.remove((int) rowPartitionCountIndex);
+        // rowPartitionCountIndex 一定会在 low 的左边，所以 rowPartitionCountIndex 对应的元素移除，右侧所有元素序号-1
+        if (temp.getCurrentCount() > target.get(low - 1).getCurrentCount()) {
+            target.add(low - 1, temp);
+        } else {
+            target.add(low, temp);
         }
-        System.out.println("一趟");
         return low;
     }
 
@@ -140,14 +147,14 @@ public class KeyKeeper<K> {
 
     public static void main(String[] args) {
         KeyKeeper<String> keyKeeper = new KeyKeeper(16, 0.75F);
-        for (int i = 0; i < 120; i++) {
-            keyKeeper.count("120");
+        for (int i = 0; i < 888; i++) {
+            keyKeeper.count("888");
         }
-        for (int i = 0; i < 240; i++) {
-            keyKeeper.count("240");
+        for (int i = 0; i < 999; i++) {
+            keyKeeper.count("999");
         }
-        for (int i = 0; i < 33; i++) {
-            keyKeeper.count("33");
+        for (int i = 0; i < 99; i++) {
+            keyKeeper.count("99");
         }
         for (int i = 0; i < 144; i++) {
             keyKeeper.count("144");
@@ -168,7 +175,7 @@ public class KeyKeeper<K> {
             keyKeeper.count("38");
         }
 
-        ArrayList<String> r = keyKeeper.getOrderedTopK(1);
+        ArrayList<String> r = keyKeeper.getOrderedTopK(4);
         System.out.println(r);
 
     }
