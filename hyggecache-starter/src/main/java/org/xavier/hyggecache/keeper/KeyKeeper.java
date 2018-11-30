@@ -1,7 +1,7 @@
 package org.xavier.hyggecache.keeper;
 
 import org.xavier.hyggecache.utils.SortHelper;
-import org.xavier.hyggecache.utils.bo.BaseSortItem;
+import org.xavier.hyggecache.utils.bo.CacheKeySortItem;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -47,12 +47,12 @@ public class KeyKeeper<K> {
      * @param k 前多少个最大数
      * @return 无序集合中的最大的前 k 个数组成的集合
      */
-    public ArrayList<K> getOrderedTopK(Integer k) {
+    public ArrayList<CacheKeySortItem<K>> getOrderedTopK(Integer k) {
         LinkedList<CacheKeySortItem<K>> sortList = snapshot();
         Integer topKIndex = sortHelper.getIndexOfTopK(sortList, k);
-        ArrayList<K> result = new ArrayList(k);
+        ArrayList<CacheKeySortItem<K>> result = new ArrayList(k);
         for (int i = 0; i <= topKIndex; i++) {
-            result.add(sortList.get(i).getTargetObj());
+            result.add(sortList.get(i));
         }
         return result;
     }
@@ -69,23 +69,5 @@ public class KeyKeeper<K> {
             sortTemp.add(new CacheKeySortItem(entry.getKey(), entry.getValue().get()));
         }
         return sortTemp;
-    }
-
-    private class CacheKeySortItem<K> extends BaseSortItem<K> {
-        private int count;
-
-        public CacheKeySortItem(K key, int count) {
-            this.count = count;
-            this.targetObj = key;
-        }
-
-        @Override
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
     }
 }
