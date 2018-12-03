@@ -37,6 +37,7 @@ public class ConfigForMerge extends GlobalConfig {
         initSerializerPolicy(cacheAnnotationTemp, cachedConfig, globalConfig);
         initSerializerName(cacheAnnotationTemp, cachedConfig, globalConfig);
         initSerializeTypeInfoKey(cacheAnnotationTemp, cachedConfig, globalConfig);
+        initHotKeyCheck(cacheAnnotationTemp, cachedConfig, globalConfig);
         this.returnClass = returnClass;
     }
 
@@ -179,6 +180,19 @@ public class ConfigForMerge extends GlobalConfig {
         secondPriority = null;
         thirdPriority = null;
         this.serializeTypeInfoKey = mergeAsString(highestPriority, secondPriority, thirdPriority);
+    }
+
+    private void initHotKeyCheck(Object cacheAnnotationTemp, CachedConfig cachedConfig, GlobalConfig globalConfig) {
+        Boolean highestPriority, secondPriority, thirdPriority;
+        if (cacheAnnotationTemp instanceof Cacheable) {
+            Cacheable cacheAnnotation = (Cacheable) cacheAnnotationTemp;
+            highestPriority = getAsBoolean(cacheAnnotation.hotKeyCheck(), null);
+        } else {
+            highestPriority = null;
+        }
+        secondPriority = getAsBoolean(cachedConfig.hotKeyCheck(), null);
+        thirdPriority = globalConfig.hotKeyCheck;
+        this.hotKeyCheck = mergeAsBoolean(highestPriority, secondPriority, thirdPriority);
     }
 
     public String getKeyExpression() {

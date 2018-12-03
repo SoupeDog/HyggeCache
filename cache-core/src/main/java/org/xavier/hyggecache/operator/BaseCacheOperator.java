@@ -60,6 +60,21 @@ public abstract class BaseCacheOperator<K> {
     public abstract void putNullValue(CacheOperatorConfig config, K cacheKey);
 
     /**
+     * 查询目标 key 对应的剩余过期时间
+     *
+     * @param cacheKeyByteArrayVal 缓存唯一标识
+     */
+    public abstract Long getTTL(byte[] cacheKeyByteArrayVal);
+
+    /**
+     * 重置 key 对应的剩余过期时间
+     *
+     * @param cacheKeyByteArrayVal 缓存唯一标识
+     * @param newExpire            新的过期时间，单位由 Operator 自行确定
+     */
+    public abstract Long resetTTL(byte[] cacheKeyByteArrayVal, Number newExpire);
+
+    /**
      * 获取远程缓存连接对象，该方法内部应实断开连接自检并自动重连，最终返回连接状态的连接对象
      *
      * @return 可用的连接对象

@@ -28,6 +28,11 @@ public class GlobalConfig extends CoreConfig {
      */
     protected String serializerName;
 
+    /**
+     * 是否开启热点 key 挽救
+     */
+    protected Boolean hotKeyCheck;
+
     public GlobalConfig() {
     }
 
@@ -60,5 +65,13 @@ public class GlobalConfig extends CoreConfig {
 
     public void setSerializerName(String serializerName) {
         this.serializerName = serializerName;
+    }
+
+    public Boolean getHotKeyCheck() {
+        return hotKeyCheck;
+    }
+
+    public void setHotKeyCheck(Boolean hotKeyCheck) {
+        this.hotKeyCheck = hotKeyCheck;
     }
 }

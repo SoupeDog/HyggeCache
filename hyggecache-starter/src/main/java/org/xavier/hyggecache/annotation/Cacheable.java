@@ -31,4 +31,6 @@ public @interface Cacheable {
     String cacheNullValue() default "";
 
     String nullValueExpireInMillis() default "";
+
+    String hotKeyCheck() default "";
 }

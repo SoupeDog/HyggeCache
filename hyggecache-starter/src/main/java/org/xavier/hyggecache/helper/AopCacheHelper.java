@@ -11,7 +11,7 @@ import org.xavier.hyggecache.config.CacheOperatorConfig;
  * @date 2018/11/18
  * @since Jdk 1.8
  */
-public interface AoPCacheHelper {
+public interface AopCacheHelper {
 
     /**
      * 初始化 cacheOperatorConfig

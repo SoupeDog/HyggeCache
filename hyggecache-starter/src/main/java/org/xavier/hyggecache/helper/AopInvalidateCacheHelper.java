@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * @date 2018.11.15
  * @since Jdk 1.8
  */
-public class AopInvalidateCacheHelper<K> extends BaseInvalidateCacheHelper<K> implements AoPCacheHelper{
+public class AopInvalidateCacheHelper<K> extends BaseInvalidateCacheHelper<K> implements AopCacheHelper {
     /**
      * 被执行缓存 AOP 方法的具体实现类
      */

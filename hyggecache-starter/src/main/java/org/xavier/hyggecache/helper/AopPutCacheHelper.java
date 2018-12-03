@@ -5,7 +5,6 @@ import org.xavier.hyggecache.config.SerializerConfig;
 import org.xavier.hyggecache.enums.ImplementsType;
 
 import java.lang.reflect.Method;
-import java.util.Optional;
 
 /**
  * 描述信息：<br/>
@@ -16,7 +15,7 @@ import java.util.Optional;
  * @date 2018.11.15
  * @since Jdk 1.8
  */
-public class AopPutCacheHelper<K> extends BasePutCacheHelper<K> implements AoPCacheHelper {
+public class AopPutCacheHelper<K> extends BasePutCacheHelper<K> implements AopCacheHelper {
     /**
      * 被执行缓存 AOP 方法的具体实现类
      */

@@ -48,7 +48,7 @@ public class Config {
 
     @Bean
     public RedisCacheOperator redisCacheOperator(JedisConnectionFactory jedisConnectionFactory) {
-        RedisCacheOperator result = new RedisCacheOperator(jedisConnectionFactory);
+        RedisCacheOperator result = new RedisCacheOperator(null,jedisConnectionFactory);
         return result;
     }
 }

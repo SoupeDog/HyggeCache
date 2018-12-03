@@ -2,8 +2,10 @@ package org.xavier.hyggecache.operator.redis;
 
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.xavier.hyggecache.config.CacheOperatorConfig;
+import org.xavier.hyggecache.config.HotKeyConfig;
 import org.xavier.hyggecache.enums.HyggeCacheExceptionEnum;
 import org.xavier.hyggecache.exception.HyggeCacheRuntimeException;
+import org.xavier.hyggecache.keeper.KeyKeeper;
 import org.xavier.hyggecache.operator.BaseCacheOperator;
 import redis.clients.jedis.Jedis;
 
@@ -22,15 +24,18 @@ import java.util.function.Function;
  */
 public class RedisCacheOperator<K> extends BaseCacheOperator<K> {
     private JedisConnectionFactory jedisConnectionFactory;
+    private KeyKeeper<K> keyKeeper;
 
-    public RedisCacheOperator(JedisConnectionFactory jedisConnectionFactory) {
+    public RedisCacheOperator(HotKeyConfig hotKeyConfig, JedisConnectionFactory jedisConnectionFactory) {
         this.jedisConnectionFactory = jedisConnectionFactory;
+        keyKeeper = new KeyKeeper(hotKeyConfig, this);
     }
 
     @Override
     public Optional<byte[]> get(CacheOperatorConfig config, K cacheKey) {
         Jedis jedis = (Jedis) getConnection();
         byte[] bytes_Key = buildKey(config, cacheKey);
+        keyKeeper.count(bytes_Key);
         byte[] result = jedis.get(bytes_Key);
         return result == null ? Optional.empty() : Optional.of(result);
     }
@@ -70,6 +75,18 @@ public class RedisCacheOperator<K> extends BaseCacheOperator<K> {
         return result;
     }
 
+    @Override
+    public Long getTTL(byte[] cacheKeyByteArrayVal) {
+        Jedis jedis = (Jedis) getConnection();
+        return jedis.ttl(cacheKeyByteArrayVal);
+    }
+
+    @Override
+    public Long resetTTL(byte[] cacheKeyByteArrayVal, Number newExpire) {
+        Jedis jedis = (Jedis) getConnection();
+        return jedis.expire(cacheKeyByteArrayVal, newExpire.intValue());
+    }
+
     protected byte[] buildKey(CacheOperatorConfig config, K key) {
         try {
             byte[] keyBytes;
@@ -99,7 +116,6 @@ public class RedisCacheOperator<K> extends BaseCacheOperator<K> {
             throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.CACHE_KEY, "UTF-8 was Unsupported.", e);
         }
     }
-
 
     protected Object convertKey(K key, Function keyConverter) {
         try {
