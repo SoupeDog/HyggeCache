@@ -7,6 +7,7 @@ import org.xavier.hyggecache.utils.SortHelper;
 import org.xavier.hyggecache.utils.bo.CacheKeySortItem;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
@@ -100,7 +101,7 @@ public class KeyKeeper<K> implements Runnable {
      * @return 无序集合中的最大的前 k 个数组成的集合
      */
     public ArrayList<CacheKeySortItem<K>> getTopK(Boolean isOrdered, Integer k) {
-        LinkedList<CacheKeySortItem<K>> sortList = snapshot();
+        LinkedList<CacheKeySortItem<K>> sortList =null;
         int topKIndex = sortHelper.getIndexOfTopK(sortList, k);
         ArrayList<CacheKeySortItem<K>> result = getCacheKeySortItems(k, sortList, topKIndex);
         if (isOrdered) {
@@ -116,7 +117,7 @@ public class KeyKeeper<K> implements Runnable {
      * @param k         前多少个最大数
      * @return 无序集合中的最大的前 k 个数组成的集合
      */
-    public ArrayList<CacheKeySortItem<K>> getTopK(Boolean isOrdered, Integer k, LinkedList<CacheKeySortItem<K>> sortList) {
+    public ArrayList<CacheKeySortItem<K>> getTopK(Boolean isOrdered, Integer k, List<CacheKeySortItem<K>> sortList) {
         int topKIndex = sortHelper.getIndexOfTopK(sortList, k);
         ArrayList<CacheKeySortItem<K>> result = getCacheKeySortItems(k, sortList, topKIndex);
         if (isOrdered) {
@@ -125,7 +126,7 @@ public class KeyKeeper<K> implements Runnable {
         return result;
     }
 
-    private ArrayList<CacheKeySortItem<K>> getCacheKeySortItems(Integer k, LinkedList<CacheKeySortItem<K>> sortList, int topKIndex) {
+    private ArrayList<CacheKeySortItem<K>> getCacheKeySortItems(Integer k, List<CacheKeySortItem<K>> sortList, int topKIndex) {
         ArrayList<CacheKeySortItem<K>> result;
         if (topKIndex > 0) {
             result = new ArrayList(k);
@@ -140,7 +141,7 @@ public class KeyKeeper<K> implements Runnable {
 
     public void reset() {
         Integer realCheckDelta_Second = Double.valueOf((System.currentTimeMillis() - lastCheckStartTs) / 1000).intValue();
-        LinkedList<CacheKeySortItem<K>> sortList = snapshot();
+        LinkedList<CacheKeySortItem<K>> sortList =null;
         keyMap = new ConcurrentHashMap(hotKeyConfig.getDefaultSize());
         lastCheckStartTs = System.currentTimeMillis();
         ArrayList<CacheKeySortItem<K>> rescueList = getTopK(false, hotKeyConfig.getHotKeyRescueMaxSize(), sortList);
@@ -168,8 +169,8 @@ public class KeyKeeper<K> implements Runnable {
      *
      * @return keyMap 等待排序的 key 集合
      */
-    private LinkedList<CacheKeySortItem<K>> snapshot() {
-        LinkedList<CacheKeySortItem<K>> sortTemp = new LinkedList();
+    public ArrayList<CacheKeySortItem<K>> snapshot() {
+        ArrayList<CacheKeySortItem<K>> sortTemp = new ArrayList();
         for (Map.Entry<K, AtomicInteger> entry : keyMap.entrySet()) {
             sortTemp.add(new CacheKeySortItem(entry.getKey(), entry.getValue().get()));
         }
