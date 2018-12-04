@@ -38,9 +38,9 @@ public class KeyKeeper<K> implements Runnable {
      */
     private Integer rescueDeltaX64_Second;
     /**
-     * 32 倍热点 Key 检测间隔(毫秒)
+     * 32 倍热点 Key 检测间隔(秒)
      */
-    private Long rescueDeltaX32;
+    private Integer rescueDeltaX32;
     /**
      * 缓存落地操作对象
      */
@@ -54,6 +54,10 @@ public class KeyKeeper<K> implements Runnable {
     private Random random = new Random();
     private SortHelper<CacheKeySortItem<K>> sortHelper = new SortHelper();
     private volatile ConcurrentHashMap<K, AtomicInteger> keyMap;
+    /**
+     * 热点 key 拯救线程池
+     */
+    private ScheduledThreadPoolExecutor scheduledExecutorService;
 
     public KeyKeeper(HotKeyConfig hotKeyConfig, BaseCacheOperator operator) {
         lastCheckStartTs = System.currentTimeMillis();
@@ -62,7 +66,7 @@ public class KeyKeeper<K> implements Runnable {
         keyMap = new ConcurrentHashMap(hotKeyConfig.getDefaultSize(), hotKeyConfig.getLoadFactor());
         rescueDelta_Second = Long.valueOf(TimeUnit.MILLISECONDS.toSeconds(hotKeyConfig.getHotKeyRescueDelta())).intValue();
         rescueDeltaX64_Second = rescueDelta_Second << 10;
-        rescueDeltaX32 = hotKeyConfig.getHotKeyRescueDelta() << 5;
+        rescueDeltaX32 = rescueDelta_Second << 5;
 
         if (hotKeyConfig.getHotKeyCheckActive()) {
             Thread.UncaughtExceptionHandler uncaughtExceptionHandler = (thread, throwable) -> {
@@ -70,9 +74,9 @@ public class KeyKeeper<K> implements Runnable {
                 System.err.println(thread.getName() + " - " + throwable.getMessage());
                 throwable.printStackTrace();
             };
-            ScheduledThreadPoolExecutor scheduledExecutorService = new ScheduledThreadPoolExecutor(1, new BasicThreadFactory.Builder().namingPattern("HotKeyCheck").daemon(true).uncaughtExceptionHandler(uncaughtExceptionHandler).build());
+            scheduledExecutorService = new ScheduledThreadPoolExecutor(1, new BasicThreadFactory.Builder().namingPattern("HotKeyCheck").daemon(true).uncaughtExceptionHandler(uncaughtExceptionHandler).build());
             scheduledExecutorService.setMaximumPoolSize(1);
-            scheduledExecutorService.schedule(this, rescueDelta_Second, TimeUnit.SECONDS);
+            scheduledExecutorService.scheduleWithFixedDelay(this, rescueDelta_Second, rescueDelta_Second, TimeUnit.SECONDS);
         }
     }
 
@@ -175,5 +179,6 @@ public class KeyKeeper<K> implements Runnable {
     @Override
     public void run() {
         reset();
+        System.out.println("检测");
     }
 }

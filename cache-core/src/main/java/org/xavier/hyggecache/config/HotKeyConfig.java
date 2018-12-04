@@ -12,6 +12,9 @@ import java.util.function.Function;
  * @since Jdk 1.8
  */
 public class HotKeyConfig {
+    public static final String HOTKEY_CONFIG_BEAN_NAME = "default_HotKeyConfig";
+    public static final String HOTKEY_CONFIG_BEAN_NAME_CUSTOM = "default_HotKeyConfig_CUSTOM";
+
     /**
      * 默认的 key 存储数量，设置一个合理值减少重建 Hash 的次数
      */
@@ -40,11 +43,11 @@ public class HotKeyConfig {
     /**
      * key 格式化函数，转换成 Map 能做 key 的值
      */
-    private Function keyFormat;
+    private Function keyFormat = (key) -> new String((byte[]) key);
     /**
      * key 格式化函数，转换成 Map 能做 key 的值的逆向操作
      */
-    private Function keyAntiFormat;
+    private Function keyAntiFormat = (keyString) -> ((String) keyString).getBytes();
 
     public Integer getDefaultSize() {
         return defaultSize;

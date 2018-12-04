@@ -1,6 +1,8 @@
 package org.xavier.hyggecache.operator;
 
 import org.xavier.hyggecache.config.CacheOperatorConfig;
+import org.xavier.hyggecache.config.HotKeyConfig;
+import org.xavier.hyggecache.keeper.KeyKeeper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +20,10 @@ import java.util.Optional;
  */
 public abstract class BaseCacheOperator<K> {
     public static final String CACHE_OPERATOR_BEAN_NAME = "default_CacheOperator";
-
+    /**
+     * 热点 Key 配置
+     */
+    protected HotKeyConfig hotKeyConfig;
     /**
      * 缓存 null 对象标识的实际值
      */
@@ -88,5 +93,18 @@ public abstract class BaseCacheOperator<K> {
     public Boolean isNullFlag(byte[] checkTarget) {
         Boolean result = Arrays.equals(NULL_VALUE, checkTarget);
         return result;
+    }
+
+    /**
+     * 热点 key 检测机制初始化
+     */
+    public abstract void initHotKeyCheck();
+
+    public HotKeyConfig getHotKeyConfig() {
+        return hotKeyConfig;
+    }
+
+    public void setHotKeyConfig(HotKeyConfig hotKeyConfig) {
+        this.hotKeyConfig = hotKeyConfig;
     }
 }

@@ -26,9 +26,8 @@ public class RedisCacheOperator<K> extends BaseCacheOperator<K> {
     private JedisConnectionFactory jedisConnectionFactory;
     private KeyKeeper<K> keyKeeper;
 
-    public RedisCacheOperator(HotKeyConfig hotKeyConfig, JedisConnectionFactory jedisConnectionFactory) {
+    public RedisCacheOperator(JedisConnectionFactory jedisConnectionFactory) {
         this.jedisConnectionFactory = jedisConnectionFactory;
-        keyKeeper = new KeyKeeper(hotKeyConfig, this);
     }
 
     @Override
@@ -73,6 +72,11 @@ public class RedisCacheOperator<K> extends BaseCacheOperator<K> {
     public Object getConnection() {
         Jedis result = (Jedis) jedisConnectionFactory.getConnection().getNativeConnection();
         return result;
+    }
+
+    @Override
+    public void initHotKeyCheck() {
+        keyKeeper = new KeyKeeper(hotKeyConfig, this);
     }
 
     @Override
@@ -123,5 +127,13 @@ public class RedisCacheOperator<K> extends BaseCacheOperator<K> {
         } catch (Throwable e) {
             throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.CACHE_KEY, "Key converting failed", e);
         }
+    }
+
+    public KeyKeeper<K> getKeyKeeper() {
+        return keyKeeper;
+    }
+
+    public void setKeyKeeper(KeyKeeper<K> keyKeeper) {
+        this.keyKeeper = keyKeeper;
     }
 }

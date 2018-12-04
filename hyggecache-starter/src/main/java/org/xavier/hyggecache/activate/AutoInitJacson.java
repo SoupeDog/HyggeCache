@@ -17,13 +17,11 @@ import org.xavier.hyggecache.aop.CachePointCut;
 import org.xavier.hyggecache.builder.AopCacheHelperBuilder;
 import org.xavier.hyggecache.config.GlobalConfig;
 import org.xavier.hyggecache.config.GlobalConfigProperties;
+import org.xavier.hyggecache.config.HotKeyConfig;
 import org.xavier.hyggecache.enums.HyggeCacheExceptionEnum;
 import org.xavier.hyggecache.enums.SerializerPolicyEnum;
 import org.xavier.hyggecache.exception.HyggeCacheRuntimeException;
-import org.xavier.hyggecache.keeper.PointcutKeeper;
-import org.xavier.hyggecache.keeper.SerializerKeeper;
-import org.xavier.hyggecache.keeper.TypeInfoKeeper;
-import org.xavier.hyggecache.keeper.TypeInfoKeeperLv2;
+import org.xavier.hyggecache.keeper.*;
 import org.xavier.hyggecache.operator.BaseCacheOperator;
 import org.xavier.hyggecache.serializer.BaseSerializer;
 import org.xavier.hyggecache.serializer.JacksonSerializer;
@@ -116,7 +114,7 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
     }
 
     @Bean(BaseCacheOperator.CACHE_OPERATOR_BEAN_NAME)
-    public BaseCacheOperator baseCacheOperator() {
+    public BaseCacheOperator baseCacheOperator(HotKeyConfig default_HotKeyConfig) {
         BaseCacheOperator result = null;
         Map<String, BaseCacheOperator> operatorMap = applicationContext.getBeansOfType(BaseCacheOperator.class);
         if (operatorMap.size() != 1) {
@@ -133,7 +131,8 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
         for (BaseCacheOperator operator : operatorMap.values()) {
             result = operator;
         }
-
+        result.setHotKeyConfig(default_HotKeyConfig);
+        result.initHotKeyCheck();
         return result;
     }
 
@@ -147,6 +146,21 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
         return new AopCacheHelperBuilder(applicationContext, default_CacheOperator, serializerKeeper, pointcutKeeper, globalConfig);
     }
 
+    @Bean(HotKeyConfig.HOTKEY_CONFIG_BEAN_NAME)
+    public HotKeyConfig hotKeyConfig(GlobalConfigProperties globalConfigProperties) {
+        HotKeyConfig hotKeyConfig = applicationContext.getBeansOfType(HotKeyConfig.class).get(HotKeyConfig.HOTKEY_CONFIG_BEAN_NAME_CUSTOM);
+        if (hotKeyConfig == null) {
+            hotKeyConfig = new HotKeyConfig();
+            hotKeyConfig.setHotKeyCheckActive(globalConfigProperties.getHotKeyCheckActive());
+            hotKeyConfig.setDefaultSize(globalConfigProperties.getDefaultSize());
+            hotKeyConfig.setLoadFactor(globalConfigProperties.getLoadFactor());
+            hotKeyConfig.setHotKeyMinQPS(globalConfigProperties.getHotKeyMinQPS());
+            hotKeyConfig.setHotKeyRescueMaxSize(globalConfigProperties.getHotKeyRescueMaxSize());
+            hotKeyConfig.setHotKeyRescueDelta(globalConfigProperties.getHotKeyRescueDelta());
+        }
+        return hotKeyConfig;
+    }
+
     @Bean(name = CacheAdvisor.CACHE_ADVISOR_BEAN_NAME)
     public CacheAdvisor cacheAdvisor(AopCacheHelperBuilder aopCacheHelperBuilder) {
         CachePointCut cachePointCut = new CachePointCut(basePackages, aopCacheHelperBuilder, aopCacheHelperBuilder.getPointcutKeeper());
@@ -156,6 +170,4 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
         advisor.setBeanFactory(applicationContext);
         return advisor;
     }
-
-
 }
