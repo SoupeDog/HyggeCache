@@ -163,10 +163,10 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
     }
 
     @Bean(name = CacheAdvisor.CACHE_ADVISOR_BEAN_NAME)
-    public CacheAdvisor cacheAdvisor(AopCacheHelperBuilder aopCacheHelperBuilder) {
+    public CacheAdvisor cacheAdvisor(AopCacheHelperBuilder aopCacheHelperBuilder,GlobalConfig globalConfig) {
         CachePointCut cachePointCut = new CachePointCut(basePackages, aopCacheHelperBuilder, aopCacheHelperBuilder.getPointcutKeeper());
         CacheAdvisor advisor = new CacheAdvisor(cachePointCut);
-        CacheInterceptor interceptor = new CacheInterceptor(aopCacheHelperBuilder.getPointcutKeeper());
+        CacheInterceptor interceptor = new CacheInterceptor(aopCacheHelperBuilder.getPointcutKeeper(),globalConfig);
         advisor.setAdvice(interceptor);
         advisor.setBeanFactory(applicationContext);
         return advisor;

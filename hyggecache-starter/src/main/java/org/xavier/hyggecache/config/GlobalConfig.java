@@ -14,6 +14,10 @@ import org.xavier.hyggecache.enums.SerializerPolicyEnum;
  */
 public class GlobalConfig extends CoreConfig {
     /**
+     * 是否启动 HyggeCache
+     */
+    private Boolean isHyggeCacheActive;
+    /**
      * cacheKey 前缀
      */
     protected String prefix;
@@ -41,6 +45,7 @@ public class GlobalConfig extends CoreConfig {
         this.cacheNullValue = globalConfigProperties.getCacheNullValue();
         this.nullValueExpireInMillis = globalConfigProperties.getNullValueExpireInMillis();
         this.prefix = globalConfigProperties.getPrefix();
+        this.isHyggeCacheActive=globalConfigProperties.getHyggeCacheActive();
     }
 
     public String getPrefix() {
@@ -73,5 +78,13 @@ public class GlobalConfig extends CoreConfig {
 
     public void setHotKeyCheck(Boolean hotKeyCheck) {
         this.hotKeyCheck = hotKeyCheck;
+    }
+
+    public Boolean getHyggeCacheActive() {
+        return isHyggeCacheActive;
+    }
+
+    public void setHyggeCacheActive(Boolean hyggeCacheActive) {
+        isHyggeCacheActive = hyggeCacheActive;
     }
 }

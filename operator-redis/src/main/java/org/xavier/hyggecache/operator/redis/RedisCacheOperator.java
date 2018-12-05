@@ -80,6 +80,13 @@ public class RedisCacheOperator<K> extends BaseCacheOperator<K> {
     }
 
     @Override
+    public void stopHotKeyCheck() {
+        if (keyKeeper != null) {
+            keyKeeper.stop();
+        }
+    }
+
+    @Override
     public Long getTTL(byte[] cacheKeyByteArrayVal) {
         Jedis jedis = (Jedis) getConnection();
         return jedis.ttl(cacheKeyByteArrayVal);

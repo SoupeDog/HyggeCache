@@ -4,6 +4,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.context.expression.AnnotatedElementKey;
 import org.springframework.expression.EvaluationContext;
+import org.xavier.hyggecache.config.GlobalConfig;
 import org.xavier.hyggecache.enums.HyggeCacheExceptionEnum;
 import org.xavier.hyggecache.evaluator.ExpressionEvaluator;
 import org.xavier.hyggecache.exception.HyggeCacheRuntimeException;
@@ -23,29 +24,35 @@ import java.lang.reflect.Method;
  */
 public class CacheInterceptor implements MethodInterceptor {
     private PointcutKeeper pointcutKeeper;
+    private GlobalConfig globalConfig;
     private static ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator();
 
-    public CacheInterceptor(PointcutKeeper pointcutKeeper) {
+    public CacheInterceptor(PointcutKeeper pointcutKeeper, GlobalConfig globalConfig) {
         this.pointcutKeeper = pointcutKeeper;
+        this.globalConfig = globalConfig;
     }
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) {
         Object result = null;
-        Method method = methodInvocation.getMethod();
-        BaseCacheHelper helper = pointcutKeeper.queryHandler(method, methodInvocation.getThis().getClass());
-        switch (helper.getCacheHelperType()) {
-            case GET:
-                result = doGet((BaseGetCacheHelper) helper, methodInvocation);
-                break;
-            case PUT:
-                result = doPut((BasePutCacheHelper) helper, methodInvocation);
-                break;
-            case INVALIDATE:
-                result = doInvalidate((BaseInvalidateCacheHelper) helper, methodInvocation);
-                break;
-            default:
-                throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.INVOKE, "Fail to invoke,unsupported cache type : " + helper.getCacheHelperType().getDescription());
+        if (globalConfig.getHyggeCacheActive()) {
+            Method method = methodInvocation.getMethod();
+            BaseCacheHelper helper = pointcutKeeper.queryHandler(method, methodInvocation.getThis().getClass());
+            switch (helper.getCacheHelperType()) {
+                case GET:
+                    result = doGet((BaseGetCacheHelper) helper, methodInvocation);
+                    break;
+                case PUT:
+                    result = doPut((BasePutCacheHelper) helper, methodInvocation);
+                    break;
+                case INVALIDATE:
+                    result = doInvalidate((BaseInvalidateCacheHelper) helper, methodInvocation);
+                    break;
+                default:
+                    throw new HyggeCacheRuntimeException(HyggeCacheExceptionEnum.INVOKE, "Fail to invoke,unsupported cache type : " + helper.getCacheHelperType().getDescription());
+            }
+        } else {
+            result = actualInvoke(methodInvocation);
         }
         return result;
     }

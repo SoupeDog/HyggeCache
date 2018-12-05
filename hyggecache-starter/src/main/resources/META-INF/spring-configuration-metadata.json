@@ -1,6 +1,17 @@
 {
   "hints": [
     {
+      "name": "hyggecache.default.hyggeCacheActive",
+      "values": [
+        {
+          "value": true
+        },
+        {
+          "value": false
+        }
+      ]
+    },
+    {
       "name": "hyggecache.default.cacheNullValue",
       "values": [
         {
@@ -31,6 +42,11 @@
     }
   ],
   "properties": [
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.hyggeCacheActive",
+      "type": "java.lang.Boolean"
+    },
     {
       "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
       "name": "hyggecache.default.expireInMillis",

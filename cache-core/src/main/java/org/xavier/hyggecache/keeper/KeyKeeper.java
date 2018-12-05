@@ -201,6 +201,12 @@ public class KeyKeeper<K> implements Runnable {
         }
     }
 
+    public void stop() {
+        if (scheduledExecutorService != null) {
+            scheduledExecutorService.shutdown();
+        }
+    }
+
     public HotKeyStatistics<K> getHotKeyStatistics() {
         return hotKeyStatistics;
     }

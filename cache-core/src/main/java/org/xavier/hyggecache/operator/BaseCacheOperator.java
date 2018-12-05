@@ -100,6 +100,11 @@ public abstract class BaseCacheOperator<K> {
      */
     public abstract void initHotKeyCheck();
 
+    /**
+     * 热点 key 检测机制停止
+     */
+    public abstract void stopHotKeyCheck();
+
     public HotKeyConfig getHotKeyConfig() {
         return hotKeyConfig;
     }

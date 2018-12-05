@@ -14,6 +14,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "hyggecache.default")
 public class GlobalConfigProperties {
     /**
+     * 是否启动 HyggeCache
+     */
+    private Boolean isHyggeCacheActive;
+    /**
      * 默认缓存过期时间(毫秒)，默认 1 小时
      */
     private Long expireInMillis;
@@ -54,6 +58,14 @@ public class GlobalConfigProperties {
      * 单次检测热点 key 最大刷新数量
      */
     private Integer hotKeyRescueMaxSize;
+
+    public Boolean getHyggeCacheActive() {
+        return isHyggeCacheActive == null ? true : isHyggeCacheActive;
+    }
+
+    public void setHyggeCacheActive(Boolean hyggeCacheActive) {
+        isHyggeCacheActive = hyggeCacheActive;
+    }
 
     public Long getExpireInMillis() {
         return expireInMillis == null ? 3600000L : expireInMillis;
