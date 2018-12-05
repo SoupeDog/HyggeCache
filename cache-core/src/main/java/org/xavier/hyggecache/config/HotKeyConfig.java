@@ -33,9 +33,13 @@ public class HotKeyConfig {
      */
     private Integer hotKeyMinQPS;
     /**
+     * 默认 null 标识过期时间(毫秒)，默认 5 秒
+     */
+    private Long nullValueExpireInMillis;
+    /**
      * 热点 key 刷新检测间隔
      */
-    private Long hotKeyRescueDelta;
+    private Long hotKeyRescueDeltaInMillis;
     /**
      * 单次检测热点 key 最大刷新数量
      */
@@ -81,12 +85,20 @@ public class HotKeyConfig {
         this.hotKeyMinQPS = hotKeyMinQPS;
     }
 
-    public Long getHotKeyRescueDelta() {
-        return hotKeyRescueDelta;
+    public Long getNullValueExpireInMillis() {
+        return nullValueExpireInMillis;
     }
 
-    public void setHotKeyRescueDelta(Long hotKeyRescueDelta) {
-        this.hotKeyRescueDelta = hotKeyRescueDelta;
+    public void setNullValueExpireInMillis(Long nullValueExpireInMillis) {
+        this.nullValueExpireInMillis = nullValueExpireInMillis;
+    }
+
+    public Long getHotKeyRescueDeltaInMillis() {
+        return hotKeyRescueDeltaInMillis;
+    }
+
+    public void setHotKeyRescueDeltaInMillis(Long hotKeyRescueDeltaInMillis) {
+        this.hotKeyRescueDeltaInMillis = hotKeyRescueDeltaInMillis;
     }
 
     public Integer getHotKeyRescueMaxSize() {

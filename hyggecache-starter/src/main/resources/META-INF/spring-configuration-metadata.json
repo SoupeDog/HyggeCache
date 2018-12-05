@@ -10,6 +10,17 @@
           "value": false
         }
       ]
+    },
+    {
+      "name": "hyggecache.default.hotKeyCheckActive",
+      "values": [
+        {
+          "value": true
+        },
+        {
+          "value": false
+        }
+      ]
     }
   ],
   "groups": [
@@ -39,6 +50,36 @@
       "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
       "name": "hyggecache.default.prefix",
       "type": "java.lang.String"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.hotKeyContainerSize",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.hotKeyContainerLoadFactor",
+      "type": "java.lang.Float"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.hotKeyCheckActive",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.hotKeyMinQPS",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.hotKeyRescueDeltaInMillis",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "org.xavier.hyggecache.config.GlobalConfigProperties",
+      "name": "hyggecache.default.hotKeyRescueMaxSize",
+      "type": "java.lang.Integer"
     }
   ]
 }

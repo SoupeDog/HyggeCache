@@ -19,8 +19,10 @@ public class SortHelper<T extends BaseSortItem> {
 
     public int getIndexOfTopK(List<T> target, Integer k) {
         int result = -1;
-        if (target.size() >= k) {
-            result = getIndexOfTopK(target, 0, target.size() - 1, k);
+        if(target!=null){
+            if (target.size() >= k) {
+                result = getIndexOfTopK(target, 0, target.size() - 1, k);
+            }
         }
         return result;
     }

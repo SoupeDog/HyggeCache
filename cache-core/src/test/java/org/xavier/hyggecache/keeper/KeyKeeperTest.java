@@ -9,8 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import static org.junit.Assert.*;
-
 /**
  * 描述信息：<br/>
  *
@@ -26,7 +24,7 @@ public class KeyKeeperTest {
         HotKeyConfig keyConfig = new HotKeyConfig();
         keyConfig.setDefaultSize(100000);
         keyConfig.setLoadFactor(0.75F);
-        keyConfig.setHotKeyRescueDelta(5000L);
+        keyConfig.setHotKeyRescueDeltaInMillis(5000L);
         keyConfig.setHotKeyCheckActive(true);
         KeyKeeper keyKeeper = new KeyKeeper(keyConfig, null);
         Random random = new Random();

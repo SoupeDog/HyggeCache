@@ -43,7 +43,7 @@ public class CatServiceImpl implements CatService {
     @Cacheable(key = "#catId")
     public Cat getCatById(String catId) {
         System.out.println("真实调用 CatServiceImpl");
-        if (catId.equals("1")) {
+        if (!catId.equals("1")) {
             Cat cat = new Cat();
             cat.setCatId(catId);
             cat.setCatName("Dog_" + catId);

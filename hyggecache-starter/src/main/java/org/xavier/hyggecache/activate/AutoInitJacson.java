@@ -151,12 +151,13 @@ public class AutoInitJacson implements ImportAware, ApplicationContextAware {
         HotKeyConfig hotKeyConfig = applicationContext.getBeansOfType(HotKeyConfig.class).get(HotKeyConfig.HOTKEY_CONFIG_BEAN_NAME_CUSTOM);
         if (hotKeyConfig == null) {
             hotKeyConfig = new HotKeyConfig();
+            hotKeyConfig.setNullValueExpireInMillis(globalConfigProperties.getNullValueExpireInMillis());
             hotKeyConfig.setHotKeyCheckActive(globalConfigProperties.getHotKeyCheckActive());
-            hotKeyConfig.setDefaultSize(globalConfigProperties.getDefaultSize());
-            hotKeyConfig.setLoadFactor(globalConfigProperties.getLoadFactor());
+            hotKeyConfig.setDefaultSize(globalConfigProperties.getHotKeyContainerSize());
+            hotKeyConfig.setLoadFactor(globalConfigProperties.getHotKeyContainerLoadFactor());
             hotKeyConfig.setHotKeyMinQPS(globalConfigProperties.getHotKeyMinQPS());
             hotKeyConfig.setHotKeyRescueMaxSize(globalConfigProperties.getHotKeyRescueMaxSize());
-            hotKeyConfig.setHotKeyRescueDelta(globalConfigProperties.getHotKeyRescueDelta());
+            hotKeyConfig.setHotKeyRescueDeltaInMillis(globalConfigProperties.getHotKeyRescueDeltaInMillis());
         }
         return hotKeyConfig;
     }

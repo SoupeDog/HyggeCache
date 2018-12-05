@@ -32,11 +32,11 @@ public class GlobalConfigProperties {
     /**
      * 默认的 key 存储数量，设置一个合理值减少重建 Hash 的次数
      */
-    private Integer defaultSize;
+    private Integer hotKeyContainerSize;
     /**
      * key 存储的负载因子
      */
-    private Float loadFactor;
+    private Float hotKeyContainerLoadFactor;
     /**
      * 开启热点 key 检测的开关
      */
@@ -47,9 +47,9 @@ public class GlobalConfigProperties {
      */
     private Integer hotKeyMinQPS;
     /**
-     * 热点 key 刷新检测间隔
+     * 热点 key 刷新检测间隔(毫秒)
      */
-    private Long hotKeyRescueDelta;
+    private Long hotKeyRescueDeltaInMillis;
     /**
      * 单次检测热点 key 最大刷新数量
      */
@@ -87,20 +87,20 @@ public class GlobalConfigProperties {
         return nullValueExpireInMillis == null ? 5000L : nullValueExpireInMillis;
     }
 
-    public Integer getDefaultSize() {
-        return defaultSize == null ? 100000 : defaultSize;
+    public Integer getHotKeyContainerSize() {
+        return hotKeyContainerSize == null ? 100000 : hotKeyContainerSize;
     }
 
-    public void setDefaultSize(Integer defaultSize) {
-        this.defaultSize = defaultSize;
+    public void setHotKeyContainerSize(Integer hotKeyContainerSize) {
+        this.hotKeyContainerSize = hotKeyContainerSize;
     }
 
-    public Float getLoadFactor() {
-        return loadFactor == null ? 0.75F : loadFactor;
+    public Float getHotKeyContainerLoadFactor() {
+        return hotKeyContainerLoadFactor == null ? 0.75F : hotKeyContainerLoadFactor;
     }
 
-    public void setLoadFactor(Float loadFactor) {
-        this.loadFactor = loadFactor;
+    public void setHotKeyContainerLoadFactor(Float hotKeyContainerLoadFactor) {
+        this.hotKeyContainerLoadFactor = hotKeyContainerLoadFactor;
     }
 
     public Boolean getHotKeyCheckActive() {
@@ -119,12 +119,12 @@ public class GlobalConfigProperties {
         this.hotKeyMinQPS = hotKeyMinQPS;
     }
 
-    public Long getHotKeyRescueDelta() {
-        return hotKeyRescueDelta == null ? 5000L : hotKeyRescueDelta;
+    public Long getHotKeyRescueDeltaInMillis() {
+        return hotKeyRescueDeltaInMillis == null ? 5000L : hotKeyRescueDeltaInMillis;
     }
 
-    public void setHotKeyRescueDelta(Long hotKeyRescueDelta) {
-        this.hotKeyRescueDelta = hotKeyRescueDelta;
+    public void setHotKeyRescueDeltaInMillis(Long hotKeyRescueDeltaInMillis) {
+        this.hotKeyRescueDeltaInMillis = hotKeyRescueDeltaInMillis;
     }
 
     public Integer getHotKeyRescueMaxSize() {

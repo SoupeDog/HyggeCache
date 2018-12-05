@@ -26,6 +26,7 @@ public class CatController {
     public Object getCatByCatId(@PathVariable("catId") String catId) {
         return catService.getCatById(catId);
     }
+
     @GetMapping("cat/customType/{size}")
     public Object getCatCustomType(@PathVariable("size") Integer size) {
         return catService.customType(size);

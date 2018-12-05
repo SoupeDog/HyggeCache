@@ -2,6 +2,7 @@ package org.xavier.hyggecache.keeper;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.xavier.hyggecache.config.HotKeyConfig;
+import org.xavier.hyggecache.keeper.bo.HotKeyStatistics;
 import org.xavier.hyggecache.operator.BaseCacheOperator;
 import org.xavier.hyggecache.utils.SortHelper;
 import org.xavier.hyggecache.utils.bo.CacheKeySortItem;
@@ -52,9 +53,15 @@ public class KeyKeeper<K> implements Runnable {
      */
     private HotKeyConfig hotKeyConfig;
 
+    /**
+     * 用于给外部展现数据的缓存(循环覆盖，仅保留最后一次的统计)
+     */
+    private HotKeyStatistics<K> hotKeyStatistics;
+
     private Random random = new Random();
     private SortHelper<CacheKeySortItem<K>> sortHelper = new SortHelper();
     private volatile ConcurrentHashMap<K, AtomicInteger> keyMap;
+
     /**
      * 热点 key 拯救线程池
      */
@@ -65,7 +72,7 @@ public class KeyKeeper<K> implements Runnable {
         this.hotKeyConfig = hotKeyConfig;
         this.operator = operator;
         keyMap = new ConcurrentHashMap(hotKeyConfig.getDefaultSize(), hotKeyConfig.getLoadFactor());
-        rescueDelta_Second = Long.valueOf(TimeUnit.MILLISECONDS.toSeconds(hotKeyConfig.getHotKeyRescueDelta())).intValue();
+        rescueDelta_Second = Long.valueOf(TimeUnit.MILLISECONDS.toSeconds(hotKeyConfig.getHotKeyRescueDeltaInMillis())).intValue();
         rescueDeltaX64_Second = rescueDelta_Second << 10;
         rescueDeltaX32 = rescueDelta_Second << 5;
 
@@ -75,7 +82,8 @@ public class KeyKeeper<K> implements Runnable {
                 System.err.println(thread.getName() + " - " + throwable.getMessage());
                 throwable.printStackTrace();
             };
-            scheduledExecutorService = new ScheduledThreadPoolExecutor(1, new BasicThreadFactory.Builder().namingPattern("HotKeyCheck").daemon(true).uncaughtExceptionHandler(uncaughtExceptionHandler).build());
+            BasicThreadFactory threadFactory = new BasicThreadFactory.Builder().namingPattern("HotKeyCheck").uncaughtExceptionHandler(uncaughtExceptionHandler).daemon(true).build();
+            scheduledExecutorService = new ScheduledThreadPoolExecutor(1, threadFactory);
             scheduledExecutorService.setMaximumPoolSize(1);
             scheduledExecutorService.scheduleWithFixedDelay(this, rescueDelta_Second, rescueDelta_Second, TimeUnit.SECONDS);
         }
@@ -101,7 +109,7 @@ public class KeyKeeper<K> implements Runnable {
      * @return 无序集合中的最大的前 k 个数组成的集合
      */
     public ArrayList<CacheKeySortItem<K>> getTopK(Boolean isOrdered, Integer k) {
-        LinkedList<CacheKeySortItem<K>> sortList =null;
+        LinkedList<CacheKeySortItem<K>> sortList = null;
         int topKIndex = sortHelper.getIndexOfTopK(sortList, k);
         ArrayList<CacheKeySortItem<K>> result = getCacheKeySortItems(k, sortList, topKIndex);
         if (isOrdered) {
@@ -134,29 +142,36 @@ public class KeyKeeper<K> implements Runnable {
                 result.add(sortList.get(i));
             }
         } else {
-            result = new ArrayList(sortList);
+            if (sortList != null) {
+                result = new ArrayList(sortList);
+            } else {
+                result = new ArrayList();
+            }
         }
         return result;
     }
 
     public void reset() {
         Integer realCheckDelta_Second = Double.valueOf((System.currentTimeMillis() - lastCheckStartTs) / 1000).intValue();
-        LinkedList<CacheKeySortItem<K>> sortList =null;
+        List<CacheKeySortItem<K>> sortList = snapshot();
         keyMap = new ConcurrentHashMap(hotKeyConfig.getDefaultSize());
         lastCheckStartTs = System.currentTimeMillis();
         ArrayList<CacheKeySortItem<K>> rescueList = getTopK(false, hotKeyConfig.getHotKeyRescueMaxSize(), sortList);
+
         for (CacheKeySortItem<K> item : rescueList) {
             if (item.getCount() / realCheckDelta_Second > hotKeyConfig.getHotKeyMinQPS()) {
                 // 热点 key 挽救
                 resetTTL(item.getTargetObj(), operator);
             }
         }
+        hotKeyStatistics = new HotKeyStatistics(lastCheckStartTs, System.currentTimeMillis(), rescueList, hotKeyConfig.getHotKeyRescueMaxSize());
     }
 
     private Long resetTTL(K cacheKeyWithPrefix, BaseCacheOperator operator) {
         byte[] keyByteArrayVal = (byte[]) hotKeyConfig.getKeyAntiFormat().apply(cacheKeyWithPrefix);
         Long ttl = operator.getTTL(keyByteArrayVal);
-        if (ttl < rescueDeltaX32) {
+        // 默认 null 标示不参与热点key 拯救,延长 null 标示很可能造成数据不一致(假定的延长期间该查询结果有值了呢？)
+        if (ttl < rescueDeltaX32 && ttl > hotKeyConfig.getNullValueExpireInMillis()) {
             // 产生一些随机值，将挽救峰值均摊到64~128倍挽救时间间隔内
             Integer newExpire = rescueDeltaX64_Second + random.nextInt(65) * rescueDelta_Second;
             return operator.resetTTL(keyByteArrayVal, newExpire);
@@ -179,7 +194,14 @@ public class KeyKeeper<K> implements Runnable {
 
     @Override
     public void run() {
-        reset();
-        System.out.println("检测");
+        try {
+            reset();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public HotKeyStatistics<K> getHotKeyStatistics() {
+        return hotKeyStatistics;
     }
 }
