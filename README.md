@@ -6,7 +6,7 @@ HyggeCache 是一个基于 Java 的缓存系统封装，提供统一的 API 和�
 - [AutoLoadCache](https://github.com/qiujiayu/AutoLoadCache)
 - ……
 
-上述项目并未对如 ``ArrayList<HashMap<String, User>>`` 的复杂 json 对象提供良好的缓存实现(2018年11月19日)，本项目是在上述优秀实现的基础上进行了一定借鉴,并完善了复杂 Json 对象的缓存功能
+上述项目并未对如 ``ArrayList<HashMap<String, User>>`` 的复杂 json 对象提供良好的缓存实现(2018年11月19日)，本项目是在上述优秀实现的基础上进行了一定借鉴,并扩展出了复杂 Json 对象的缓存功能
 
 - 易于扩展自定义序列化代理、自定义缓存落地执行对象
 - 缓存所使用的 key 策略可配置，最小隔离粒度为不同函数方法可应用不同配置
